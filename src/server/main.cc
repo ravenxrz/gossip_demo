@@ -3,13 +3,13 @@
 
 #include "brpc/server.h"
 #include "gflags/gflags.h"
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/spdlog.h"
-#include <glog/logging.h>
+#include "gflags/gflags_declare.h"
+#include "glog/logging.h"
 
 DEFINE_uint32(port, 5555, "server port");
-DEFINE_uint32(log_level, 0, "0:trace, 1:debug, 2:info, 3:warn, 4:error");
-DEFINE_string(log_path, "./simple_gossip.log", "log path");
+DECLARE_int32(FLAGS_minloglevel);
+DECLARE_string(log_dir);
+DECLARE_int32(stderrthreshold);
 
 brpc::Server g_server;
 
@@ -32,7 +32,11 @@ int32_t init_server() {
   return OK;
 }
 
-void init_log_system(char **argv) { google::InitGoogleLogging(argv[0]); }
+void init_log_system(char **argv) {
+  FLAGS_log_dir = "./log";
+  FLAGS_minloglevel = google::INFO;
+  FLAGS_stderrthreshold = google::INFO;
+}
 
 void init(int argc, char **argv) {
   init_log_system(argv);
@@ -42,7 +46,7 @@ void init(int argc, char **argv) {
 
 void run() {
   // Wait until Ctrl-C is pressed, then Stop() and Join() the server.
-  LOG(INFO) << "run server, user [ctrl -c] to exit";
+  LOG(INFO) << "run server, press [ctrl -c] to exit";
   g_server.RunUntilAskedToQuit();
 }
 

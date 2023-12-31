@@ -1,9 +1,8 @@
 #include "storage.h"
 
 #include <deque>
-#include <spdlog/common.h>
 
-#include "glog/logging.h"
+#include "butil/logging.h"
 #include "gtest/gtest.h"
 
 class TestRangeStorage : public testing::Test {
@@ -35,7 +34,7 @@ TEST_F(TestRangeStorage, insert_case1) {
   }
 }
 
-TEST_F(TestRangeStorage, insert_case3) {
+TEST_F(TestRangeStorage, insert_case2) {
   storage_.Write({16, 17});
   {
     const auto &data = storage_.Read();
@@ -206,7 +205,6 @@ TEST_F(TestRangeStorage, multi_ranges_overlap_case12) {
 }
 
 int main(int argc, char *argv[]) {
-  google::InitGoogleLogging(argv[0]);
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

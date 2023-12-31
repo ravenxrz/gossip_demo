@@ -20,6 +20,7 @@ bool EndCompare(const Range &lhs, const Range &rhs) {
 
 // TODO(zhangxingrui): Maybe use interval tree is much better
 void MemRangeStorage::Write(const Range &data) {
+  DLOG(INFO) << "receive " << data.ToString() ;
   if (data_range_.empty()) {
     data_range_.push_back(data);
     return;
