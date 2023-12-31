@@ -76,6 +76,6 @@ void MemRangeStorage::Write(const Range &data) {
   data_range_[pos].end = end;
 }
 
-bool MemRangeStorage::IsOverlap(const Range &lhs, const Range &rhs) {
+bool RangeStorage::IsOverlap(const Range &lhs, const Range &rhs) {
   return !((lhs.end < rhs.start) || (lhs.start > rhs.end));
 }

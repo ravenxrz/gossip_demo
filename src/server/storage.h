@@ -6,43 +6,29 @@
 
 #pragma once
 
+#include "common.h"
+
 #include <cassert>
 #include <cstdint>
 #include <deque>
 #include <string>
 
-struct Range {
-  uint32_t start; // inclusive
-  uint32_t end;   // exclusive
+class RangeStorage {
+public:
+  virtual ~RangeStorage() = default;
+  virtual void Write(const Range &data) = 0;
 
-  Range(uint32_t s, uint32_t e) {
-    start = s;
-    end = e;
-  }
+  const std::deque<Range> &Read() const { return data_range_; }
 
-  bool Valid() const { return start < end; }
+protected:
+  static bool IsOverlap(const Range &lhs, const Range &rhs);
 
-  bool operator<(const Range &rhs) const { return start < rhs.start; }
-
-  bool operator==(const Range &rhs) const {
-    return start == rhs.start && end == rhs.end;
-  }
-
-  std::string ToString() const {
-    return "[" + std::to_string(start) + ":" + std::to_string(end) + ")";
-  }
+  std::deque<Range> data_range_;
 };
 
 // We only save data as range
 // like [1 - 100), [2, 5)
-class MemRangeStorage {
+class MemRangeStorage : public RangeStorage {
 public:
-  void Write(const Range &data);
-
-  const std::deque<Range> &Read() const { return data_range_; }
-
-private:
-  static bool IsOverlap(const Range &lhs, const Range &rhs);
-
-  std::deque<Range> data_range_;
+  void Write(const Range &data) override;
 };
