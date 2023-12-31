@@ -12,6 +12,9 @@ message WriteDataResponse {
   optional string error_msg = 2;
 }
 
+message EmptyMessage {}
+
 service DataService {
   rpc WriteData(WriteDataRequest) returns (WriteDataResponse);
+  rpc QueryDataRange(EmptyMessage) returns (EmptyMessage);
 }

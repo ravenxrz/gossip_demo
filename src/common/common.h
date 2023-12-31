@@ -1,15 +1,28 @@
 #pragma once
 
+#include "error.h"
+
 #include <cstdint>
+#include <iostream>
 #include <string>
 
+#include "butil/string_splitter.h"
+
 struct Range {
-  uint32_t start; // inclusive
-  uint32_t end;   // exclusive
+  uint32_t start{0}; // inclusive
+  uint32_t end{0};   // exclusive
+  Range() = default;
 
   Range(uint32_t s, uint32_t e) {
     start = s;
     end = e;
+  }
+
+  friend std::istream &operator>>(std::istream &is, Range &r) {
+    std::string val;
+    is >> val;
+    sscanf(val.c_str(), "%d,%d", &r.start, &r.end);
+    return is;
   }
 
   bool Valid() const { return start < end; }

@@ -13,6 +13,10 @@ public:
                  ::WriteDataResponse *response,
                  ::google::protobuf::Closure *done) override;
 
+  void QueryDataRange(google::protobuf::RpcController *controller,
+                      const ::EmptyMessage *request, ::EmptyMessage *response,
+                      ::google::protobuf::Closure *done) override;
+
 private:
   RangeStorage *storage_;
 };

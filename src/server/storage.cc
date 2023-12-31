@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <mutex>
 
 #include "error.h"
 #include "glog/logging.h"
@@ -20,7 +21,8 @@ bool EndCompare(const Range &lhs, const Range &rhs) {
 
 // TODO(zhangxingrui): Maybe use interval tree is much better
 void MemRangeStorage::Write(const Range &data) {
-  DLOG(INFO) << "receive " << data.ToString() ;
+  DLOG(INFO) << "receive " << data.ToString();
+  std::lock_guard<std::mutex> lck(mu_);
   if (data_range_.empty()) {
     data_range_.push_back(data);
     return;
@@ -74,6 +76,11 @@ void MemRangeStorage::Write(const Range &data) {
   }
   data_range_[pos].start = start;
   data_range_[pos].end = end;
+}
+
+std::deque<Range> MemRangeStorage ::Read() {
+  std::lock_guard<std::mutex> lck(mu_);
+  return data_range_;
 }
 
 bool RangeStorage::IsOverlap(const Range &lhs, const Range &rhs) {

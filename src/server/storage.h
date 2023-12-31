@@ -11,14 +11,14 @@
 #include <cassert>
 #include <cstdint>
 #include <deque>
+#include <mutex>
 #include <string>
 
 class RangeStorage {
 public:
   virtual ~RangeStorage() = default;
   virtual void Write(const Range &data) = 0;
-
-  const std::deque<Range> &Read() const { return data_range_; }
+  virtual std::deque<Range> Read() = 0;
 
 protected:
   static bool IsOverlap(const Range &lhs, const Range &rhs);
@@ -31,4 +31,8 @@ protected:
 class MemRangeStorage : public RangeStorage {
 public:
   void Write(const Range &data) override;
+  std::deque<Range> Read() override;
+
+private:
+  std::mutex mu_;
 };

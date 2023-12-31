@@ -21,8 +21,10 @@ public:
 
   std::string ServerInfo() const;
 
-private:
   std::string FindIp(node_id_t node_id);
 
+  std::vector<node_id_t> ListAllNodes() const;
+
+private:
   std::map<node_id_t, ip_t> node_ips_;
 };

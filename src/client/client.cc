@@ -60,8 +60,24 @@ int32_t Client::Read(node_id_t id, std::string *result) {
   if (ip.empty()) {
     return NO_SUCH_NODE_FOUND;
   }
-  // TODO(zhangxingrui): add read code here
-
+  int32_t ret = OK;
+  brpc::Channel channel;
+  brpc::ChannelOptions opt;
+  if ((ret = channel.Init(ip.c_str(), &opt)) != 0) {
+    LOG(ERROR) << "init channel failed, with code=" << ret;
+    return INIT_RPC_CHANNEL_FAILED;
+  }
+  brpc::Controller cntl;
+  EmptyMessage req, rsp;
+  DataService_Stub stub(&channel);
+  stub.QueryDataRange(&cntl, &req, &rsp, nullptr); // sync call
+  if (cntl.ErrorCode() != 0) {
+    LOG(ERROR) << "send read rpc to " << ip
+               << " failed, ctnl error code=" << cntl.ErrorCode()
+               << ", msg:" << cntl.ErrorText();
+    return cntl.ErrorCode();
+  }
+  *result = cntl.response_attachment().to_string();
   return OK;
 }
 
@@ -72,6 +88,15 @@ std::string Client::ServerInfo() const {
        << "[addr]=" << addr << '\n';
   }
   return ss.str();
+}
+
+std::vector<Client::node_id_t> Client::ListAllNodes() const {
+  std::vector<node_id_t> nodes;
+  nodes.reserve(node_ips_.size());
+  for (const auto &[node, addr] : node_ips_) {
+    nodes.push_back(node);
+  }
+  return nodes;
 }
 
 std::string Client::FindIp(node_id_t node_id) {
