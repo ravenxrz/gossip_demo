@@ -22,7 +22,8 @@ if(ENABLE_ASAN)
 endif()
 
 if(ENABLE_GCOV)
-  set(CMAKE_BUILD_TYPE Debug)
+  add_compile_options(-fprofile-arcs -ftest-coverage)
+  add_link_options(-lgcov --coverage)
 endif()
 
 add_subdirectory(src)

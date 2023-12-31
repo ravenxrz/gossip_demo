@@ -5,11 +5,12 @@ function(AddCoverage target)
     COMMAND ${LCOV_PATH} -d . --zerocounters
     COMMAND $<TARGET_FILE:${target}>
     COMMAND ${LCOV_PATH} -d . --capture -o coverage.info
-    COMMAND ${LCOV_PATH} -r coverage.info '/usr/include/*'
+    COMMAND ${LCOV_PATH} -r coverage.info '/usr/include/*' '/usr/local/*'
                          -o filtered.info
     COMMAND ${GENHTML_PATH} -o coverage-${target}
                             filtered.info --legend
     COMMAND rm -rf coverage.info filtered.info
+    COMMAND find . -name "*gcda*" | xargs rm -rf
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
 endfunction()
