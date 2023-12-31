@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+option cc_generic_services = true;
+
+message WriteDataRequest {
+  required int32 start = 1; // 左闭右开
+  required int32 end = 2;
+}
+
+message WriteDataResponse {
+  required int32 error_code = 1;
+  optional string error_msg = 2;
+}
+
+service DataService {
+  rpc WriteData(WriteDataRequest) returns (WriteDataResponse);
+}
