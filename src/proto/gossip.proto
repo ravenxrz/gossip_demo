@@ -4,8 +4,13 @@ import "data.proto";
 
 option cc_generic_services = true;
 
+
+message GossipData {
+  repeated Data ranges = 1; 
+}
+
 service GossipService {
   rpc ManualGossip(EmptyMessage) returns (EmptyMessage);
-  rpc PushData(Data) returns (EmptyMessage);
-  rpc PullData(Data) returns (EmptyMessage);
+  rpc PushData(GossipData) returns (EmptyMessage);
+  rpc PullData(GossipData) returns (GossipData);
 }

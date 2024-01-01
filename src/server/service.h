@@ -15,7 +15,7 @@ public:
                  ::google::protobuf::Closure *done) override;
 
   void QueryDataRange(google::protobuf::RpcController *controller,
-                      const ::EmptyMessage *request, ::EmptyMessage *response,
+                      const ::EmptyMessage *request, ::QueryRangeResponse *response,
                       ::google::protobuf::Closure *done) override;
 
   void ClearData(google::protobuf::RpcController *controller,
@@ -34,10 +34,10 @@ public:
                     const ::EmptyMessage *request, ::EmptyMessage *response,
                     ::google::protobuf::Closure *done) override;
   void PushData(google::protobuf::RpcController *controller,
-                const ::Data *request, ::EmptyMessage *response,
+                const ::GossipData *request, ::EmptyMessage *response,
                 ::google::protobuf::Closure *done) override;
   void PullData(google::protobuf::RpcController *controller,
-                const ::Data *request, ::EmptyMessage *response,
+                const ::GossipData *request, ::GossipData *response,
                 ::google::protobuf::Closure *done) override;
 
 private:

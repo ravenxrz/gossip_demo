@@ -11,9 +11,7 @@
 using node_id_t = uint32_t;
 using addr_t = std::string;
 
-enum TaskType : uint32_t {
-  GossipTaskType = 1000
-};
+enum TaskType : uint32_t { GossipTaskType = 1000 };
 
 struct Range {
   uint32_t start{0}; // inclusive
@@ -31,6 +29,10 @@ struct Range {
     is >> val;
     sscanf(val.c_str(), "%d,%d", &r.start, &r.end);
     return is;
+  }
+
+  static bool IsOverlap(const Range &lhs, const Range &rhs) {
+    return !((lhs.end < rhs.start) || (lhs.start > rhs.end));
   }
 
   bool Valid() const { return start < end; }

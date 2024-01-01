@@ -8,11 +8,8 @@
 
 #include "common.h"
 
-#include <cassert>
-#include <cstdint>
 #include <deque>
 #include <mutex>
-#include <string>
 
 class RangeStorage {
 public:
@@ -22,8 +19,6 @@ public:
   virtual void Clear() = 0;
 
 protected:
-  static bool IsOverlap(const Range &lhs, const Range &rhs);
-
   std::deque<Range> data_range_;
 };
 

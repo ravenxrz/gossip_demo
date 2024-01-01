@@ -32,7 +32,7 @@ void MemRangeStorage::Write(const Range &data) {
   auto left = std::lower_bound(data_range_.begin(), data_range_.end(), data,
                                StartCompare);
   if (left == data_range_.end()) {
-    if (IsOverlap(*(left - 1), data)) {
+    if (Range::IsOverlap(*(left - 1), data)) {
       (left - 1)->end = data.end;
     } else {
       data_range_.push_back(data);
@@ -41,8 +41,8 @@ void MemRangeStorage::Write(const Range &data) {
   }
   if (left != data_range_.begin()) {
     auto may_left = left - 1;
-    bool o1 = IsOverlap(*may_left, data);
-    bool o2 = IsOverlap(*left, data);
+    bool o1 = Range::IsOverlap(*may_left, data);
+    bool o2 = Range::IsOverlap(*left, data);
     if (!o1 && !o2) {
       data_range_.insert(left, data);
       return;
@@ -51,7 +51,7 @@ void MemRangeStorage::Write(const Range &data) {
       start = left->start;
     } // !o1
   } else {
-    if (!IsOverlap(*left, data)) {
+    if (!Range::IsOverlap(*left, data)) {
       data_range_.push_front(data);
       return;
     }
@@ -63,7 +63,7 @@ void MemRangeStorage::Write(const Range &data) {
   // 记住left的idx
   int pos = left - data_range_.begin();
   if (right != data_range_.end()) {
-    if (IsOverlap(*right, data)) {
+    if (Range::IsOverlap(*right, data)) {
       end = std::max(end, right->end);
       auto v = data_range_.erase(left + 1, right + 1);
     } else {
@@ -88,6 +88,3 @@ void MemRangeStorage::Clear() {
   data_range_.clear();
 }
 
-bool RangeStorage::IsOverlap(const Range &lhs, const Range &rhs) {
-  return !((lhs.end < rhs.start) || (lhs.start > rhs.end));
-}

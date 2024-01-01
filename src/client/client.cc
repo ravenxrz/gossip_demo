@@ -69,7 +69,8 @@ int32_t Client::Read(node_id_t id, std::string *result) {
     return INIT_RPC_CHANNEL_FAILED;
   }
   brpc::Controller cntl;
-  EmptyMessage req, rsp;
+  EmptyMessage req;
+  QueryRangeResponse rsp;
   DataService_Stub stub(&channel);
   stub.QueryDataRange(&cntl, &req, &rsp, nullptr); // sync call
   if (cntl.ErrorCode() != 0) {
@@ -78,7 +79,11 @@ int32_t Client::Read(node_id_t id, std::string *result) {
                << ", msg:" << cntl.ErrorText();
     return cntl.ErrorCode();
   }
-  *result = cntl.response_attachment().to_string();
+  std::stringstream ss;
+  for (uint32_t i = 0; i < rsp.ranges_size(); ++i) {
+    ss << "[" << rsp.ranges(i).start() << "," << rsp.ranges(i).end() << ')';
+  }
+  *result = ss.str();
   return OK;
 }
 

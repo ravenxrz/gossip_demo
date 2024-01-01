@@ -3,8 +3,8 @@ syntax = "proto2";
 option cc_generic_services = true;
 
 message Data {
-  required int32 start = 1; // 左闭右开
-  required int32 end = 2;
+  required uint32 start = 1; // 左闭右开
+  required uint32 end = 2;
 }
 
 message WriteDataRequest {
@@ -18,8 +18,12 @@ message WriteDataResponse {
 
 message EmptyMessage {}
 
+message QueryRangeResponse {
+  repeated Data ranges = 1;
+}
+
 service DataService {
   rpc WriteData(WriteDataRequest) returns (WriteDataResponse);
-  rpc QueryDataRange(EmptyMessage) returns (EmptyMessage);
+  rpc QueryDataRange(EmptyMessage) returns (QueryRangeResponse);
   rpc ClearData(EmptyMessage) returns (EmptyMessage);
 }
