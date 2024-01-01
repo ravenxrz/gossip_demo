@@ -12,7 +12,9 @@ void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
                                 ::WriteDataResponse *response,
                                 ::google::protobuf::Closure *done) {
   defer d([done] { done->Run(); });
-  storage_->Write(Range(request->start(), request->end()));
+  for (uint32_t i = 0; i < request->data_size(); ++i) {
+    storage_->Write(Range(request->data(i).start(), request->data(i).end()));
+  }
   response->set_error_code(OK);
 }
 
@@ -36,3 +38,19 @@ void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
   defer d([done] { done->Run(); });
   storage_->Clear();
 }
+
+void GossipServiceImpl::ManualGossip(
+    google::protobuf::RpcController *controller, const ::EmptyMessage *request,
+    ::EmptyMessage *response, ::google::protobuf::Closure *done) {
+
+}
+
+void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
+                                 const ::Data *request,
+                                 ::EmptyMessage *response,
+                                 ::google::protobuf::Closure *done) {}
+
+void GossipServiceImpl::PullData(google::protobuf::RpcController *controller,
+                                 const ::Data *request,
+                                 ::EmptyMessage *response,
+                                 ::google::protobuf::Closure *done) {}

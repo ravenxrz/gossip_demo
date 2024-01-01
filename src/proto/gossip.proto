@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+import "data.proto";
+
+option cc_generic_services = true;
+
+service GossipService {
+  rpc ManualGossip(EmptyMessage) returns (EmptyMessage);
+  rpc PushData(Data) returns (EmptyMessage);
+  rpc PullData(Data) returns (EmptyMessage);
+}

@@ -8,7 +8,7 @@
 #include "brpc/channel.h"
 #include "data.pb.h"
 
-Client::Client(const std::vector<ip_t> &servers,
+Client::Client(const std::vector<addr_t> &servers,
                const std::vector<node_id_t> &ports) {
   assert(servers.size() == ports.size());
   for (size_t i = 0; i < servers.size(); ++i) {
@@ -35,8 +35,9 @@ int32_t Client::Write(node_id_t id, const Range &data) {
   brpc::Controller cntl;
   WriteDataRequest req;
   WriteDataResponse rsp;
-  req.set_start(data.start);
-  req.set_end(data.end);
+  auto *d = req.add_data();
+  d->set_start(data.start);
+  d->set_end(data.end);
   DataService_Stub stub(&channel);
   stub.WriteData(&cntl, &req, &rsp, nullptr); // sync call
 

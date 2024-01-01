@@ -2,19 +2,28 @@
 
 class RangeStorage;
 
-#include "brpc/server.h"
+#include "common.h"
 #include "data.pb.h"
 #include "service.h"
 
+#include "brpc/server.h"
+
 class Server {
 public:
-  Server();
+  Server(addr_t addr);
 
   int32_t Init();
 
   void Run();
 
+  void RegisterPeer(const addr_t &peer);
+
+  const std::set<addr_t> &GetPeers() const { return peers_; }
+
 private:
+  addr_t self_;
+  std::set<addr_t> peers_;
+
   RangeStorage *storage_;
 
   brpc::Server rpc_server_;

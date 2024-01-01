@@ -13,12 +13,14 @@
 #include <iostream>
 #include <memory>
 
+#include "config_parser.h"
+#include "op_cntl.h"
+#include "string_utils.h"
+
 #include "butil/string_splitter.h"
 #include "butil/strings/string_piece.h"
 #include "gflags/gflags.h"
 #include "glog/logging.h"
-#include "op_cntl.h"
-#include "string_utils.h"
 
 DECLARE_int32(FLAGS_minloglevel);
 DECLARE_string(log_dir);
@@ -27,6 +29,7 @@ DECLARE_int32(stderrthreshold);
 DEFINE_string(servers, "127.0.0.1:4444,127.0.0.1:5555",
               "server addrs, split by ','");
 DEFINE_string(op_file, "", "operation file");
+DEFINE_string(conf_file, "", "cluster config file");
 
 std::unique_ptr<Client> g_client;
 std::unique_ptr<OpCntl> g_op_cntl;
@@ -36,6 +39,15 @@ void InitLogSystem(char **argv) {
   FLAGS_minloglevel = google::INFO;
   FLAGS_stderrthreshold = google::INFO;
   google::InitGoogleLogging(argv[0]);
+}
+
+void InitConf() {
+  ConfigParser::GetInstance().Init(FLAGS_conf_file);
+  // set flags
+  std::string value;
+  if (ConfigParser::GetInstance().Get("servers", &value)) {
+    FLAGS_servers = value;
+  }
 }
 
 void InitClient() {
@@ -54,8 +66,15 @@ void InitClient() {
 }
 
 void InputLoop() {
-  enum OpType : uint32_t { Write = 0, Read = 1, Clear = 2, NUM = 3 };
-  uint32_t operation = Write;
+  enum OpType : uint32_t {
+    Min = 0,
+    List = 0,
+    Write = 1,
+    Read = 2,
+    Clear = 3,
+    NUM = 4
+  };
+  uint32_t operation = List;
   int64_t node = -1;
   Range write_data;
   std::cerr << "###############################################\n"
@@ -63,13 +82,16 @@ void InputLoop() {
                "###############################################\n";
   while (true) {
     std::cerr << "input opeartion:\n"
-                 "0. write\n"
-                 "1. read\n"
-                 "2. clear\n";
+                 "0. list servers\n"
+                 "1. write\n"
+                 "2. read\n"
+                 "3. clear\n";
     std::cin >> operation;
-    if (OpType(operation) != Write && OpType(operation) != Read &&
-        OpType(operation) != Clear) {
+    if (operation < Min || operation >= NUM) {
       std::cerr << "invalid operation number\n";
+      continue;
+    } else if (operation == List) {
+      std::cerr << g_client->ServerInfo();
       continue;
     } else if (operation == Write) {
       std::cerr << "input write range(format: start,end):\n";
@@ -172,6 +194,7 @@ void ParseOpFile() {
 int main(int argc, char *argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   InitLogSystem(argv);
+  InitConf();
   InitClient();
   if (FLAGS_op_file.empty()) {
     InputLoop();

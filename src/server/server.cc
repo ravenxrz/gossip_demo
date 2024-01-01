@@ -2,12 +2,27 @@
 #include "error.h"
 #include "storage.h"
 
-#include "server_flags.h"
 #include "glog/logging.h"
+#include "server_flags.h"
 
 DECLARE_uint32(port);
 
-Server::Server() : storage_(new MemRangeStorage), data_service_(storage_) {}
+Server::Server(addr_t addr)
+    : self_(std::move(addr)), storage_(new MemRangeStorage),
+      data_service_(storage_) {}
+
+void Server::RegisterPeer(const addr_t &peer) {
+  if (peer == self_) {
+    LOG(ERROR) << "can't register myself as peer";
+    return;
+  }
+  auto ret = peers_.insert(peer);
+  if (!ret.second) {
+    LOG(ERROR) << "insert " << peer << " failed";
+    return;
+  }
+  LOG(INFO) << "register " << peer;
+}
 
 int32_t Server::Init() {
   LOG(INFO) << "init server start";

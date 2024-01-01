@@ -9,7 +9,11 @@
 #include "butil/string_splitter.h"
 
 using node_id_t = uint32_t;
-using ip_t = std::string;
+using addr_t = std::string;
+
+enum TaskType : uint32_t {
+  GossipTaskType = 1000
+};
 
 struct Range {
   uint32_t start{0}; // inclusive

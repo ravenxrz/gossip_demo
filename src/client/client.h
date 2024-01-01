@@ -11,7 +11,7 @@
 class Client {
 public:
   // REQUIRED: servers.size() = nodes.size()
-  Client(const std::vector<ip_t> &servers, const std::vector<node_id_t> &nodes);
+  Client(const std::vector<addr_t> &servers, const std::vector<node_id_t> &nodes);
 
   int32_t Write(node_id_t id, const Range& data);
 
@@ -26,5 +26,5 @@ public:
   std::vector<node_id_t> ListAllNodes() const;
 
 private:
-  std::map<node_id_t, ip_t> node_ips_;
+  std::map<node_id_t, addr_t> node_ips_;
 };

@@ -1,0 +1,6 @@
+clear:-1
+read:-1
+write:-1:1,2
+write:-1:4,7
+write:0:8,10
+read:-1

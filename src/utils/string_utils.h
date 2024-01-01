@@ -5,6 +5,7 @@
 
 inline void SplitString(const std::string &raw_str, char d,
                         std::vector<std::string> *result) {
+  result->clear();
   for (butil::StringSplitter splitter(butil::StringPiece(raw_str), d); splitter;
        splitter++) {
     result->emplace_back(splitter.field(), splitter.length());

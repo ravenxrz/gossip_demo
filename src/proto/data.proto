@@ -2,9 +2,13 @@ syntax = "proto2";
 
 option cc_generic_services = true;
 
-message WriteDataRequest {
+message Data {
   required int32 start = 1; // 左闭右开
   required int32 end = 2;
+}
+
+message WriteDataRequest {
+  repeated Data data = 1;
 }
 
 message WriteDataResponse {
