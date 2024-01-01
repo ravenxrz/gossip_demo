@@ -18,6 +18,7 @@ struct Range {
     end = e;
   }
 
+  // format start,end
   friend std::istream &operator>>(std::istream &is, Range &r) {
     std::string val;
     is >> val;

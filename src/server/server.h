@@ -10,9 +10,9 @@ class Server {
 public:
   Server();
 
-  int32_t init();
+  int32_t Init();
 
-  void run();
+  void Run();
 
 private:
   RangeStorage *storage_;

@@ -13,27 +13,27 @@ DECLARE_int32(stderrthreshold);
 
 Server g_server;
 
-void init_log_system(char **argv) {
+void InitLogSystem(char **argv) {
   FLAGS_log_dir = "./server_log";
   FLAGS_minloglevel = google::INFO;
   FLAGS_stderrthreshold = google::INFO;
 }
 
-void init(int argc, char **argv) {
-  init_log_system(argv);
-  g_server.init();
+void Init(int argc, char **argv) {
+  InitLogSystem(argv);
+  g_server.Init();
 }
 
-void run() {
+void InputLoop() {
   // Wait until Ctrl-C is pressed, then Stop() and Join() the server.
   LOG(INFO) << "run server, press [ctrl -c] to exit";
-  g_server.run(); // block
+  g_server.Run(); // block
 }
 
 int main(int argc, char *argv[]) {
   // Parse gflags. We recommend you to use gflags as well.
   gflags::ParseCommandLineFlags(&argc, &argv, true);
-  init(argc, argv);
-  run();
+  Init(argc, argv);
+  InputLoop();
   return 0;
 }
