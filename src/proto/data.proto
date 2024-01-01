@@ -17,4 +17,5 @@ message EmptyMessage {}
 service DataService {
   rpc WriteData(WriteDataRequest) returns (WriteDataResponse);
   rpc QueryDataRange(EmptyMessage) returns (EmptyMessage);
+  rpc ClearData(EmptyMessage) returns (EmptyMessage);
 }

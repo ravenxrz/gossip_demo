@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_ASAN "enable asn" ON)
-option(ENABLE_GCOV "enable gcov" ON)
+option(ENABLE_GCOV "enable gcov" OFF)
 
 # import module
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

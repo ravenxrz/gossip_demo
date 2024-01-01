@@ -83,6 +83,11 @@ std::deque<Range> MemRangeStorage ::Read() {
   return data_range_;
 }
 
+void MemRangeStorage::Clear() {
+  std::lock_guard<std::mutex> lck(mu_);
+  data_range_.clear();
+}
+
 bool RangeStorage::IsOverlap(const Range &lhs, const Range &rhs) {
   return !((lhs.end < rhs.start) || (lhs.start > rhs.end));
 }

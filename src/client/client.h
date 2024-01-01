@@ -10,14 +10,14 @@
 
 class Client {
 public:
-  using node_id_t = uint32_t;
-  using ip_t = std::string;
   // REQUIRED: servers.size() = nodes.size()
   Client(const std::vector<ip_t> &servers, const std::vector<node_id_t> &nodes);
 
   int32_t Write(node_id_t id, const Range& data);
 
   int32_t Read(node_id_t id, std::string* result);
+
+  int32_t Clear(node_id_t id);
 
   std::string ServerInfo() const;
 

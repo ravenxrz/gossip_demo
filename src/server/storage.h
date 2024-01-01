@@ -19,6 +19,7 @@ public:
   virtual ~RangeStorage() = default;
   virtual void Write(const Range &data) = 0;
   virtual std::deque<Range> Read() = 0;
+  virtual void Clear() = 0;
 
 protected:
   static bool IsOverlap(const Range &lhs, const Range &rhs);
@@ -32,6 +33,7 @@ class MemRangeStorage : public RangeStorage {
 public:
   void Write(const Range &data) override;
   std::deque<Range> Read() override;
+  void Clear() override;
 
 private:
   std::mutex mu_;

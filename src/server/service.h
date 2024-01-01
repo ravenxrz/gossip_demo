@@ -17,6 +17,10 @@ public:
                       const ::EmptyMessage *request, ::EmptyMessage *response,
                       ::google::protobuf::Closure *done) override;
 
+  void ClearData(google::protobuf::RpcController *controller,
+                 const ::EmptyMessage *request, ::EmptyMessage *response,
+                 ::google::protobuf::Closure *done) override;
+
 private:
   RangeStorage *storage_;
 };

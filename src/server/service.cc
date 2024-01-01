@@ -2,10 +2,10 @@
 
 #include <sstream>
 
+#include "brpc/controller.h"
 #include "defer.h"
 #include "error.h"
 #include "storage.h"
-#include "brpc/controller.h"
 
 void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
                                 const ::WriteDataRequest *request,
@@ -27,4 +27,12 @@ void DataServiceImpl::QueryDataRange(
   }
   brpc::Controller *cntl = static_cast<brpc::Controller *>(controller);
   cntl->response_attachment().append(ss.str());
+}
+
+void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
+                                const ::EmptyMessage *request,
+                                ::EmptyMessage *response,
+                                ::google::protobuf::Closure *done) {
+  defer d([done] { done->Run(); });
+  storage_->Clear();
 }
