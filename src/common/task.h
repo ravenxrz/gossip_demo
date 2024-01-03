@@ -28,7 +28,7 @@ public:
 protected:
   enum TaskState { TaskInit, TaskFin };
 
-  uint32_t task_state_;
+  uint32_t task_state_{TaskInit};
   uint32_t task_status_{OK};
   uint32_t task_type_;
   TaskWorker *worker_;

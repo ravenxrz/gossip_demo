@@ -143,8 +143,7 @@ TEST_F(GossipTest, PushAndPull) {
   EXPECT_CALL(rpc, QueryDataRange).WillOnce(query_handle);
   auto push_handle = [](const std::string &addr, GossipData *req,
                         EmptyMessage *rsp, google::protobuf::Closure *done) {
-    std::vector<::Range> expected_r = {
-        {15, 20}, {30, 35}, {70, 75}, {78, 80}};
+    std::vector<::Range> expected_r = {{15, 20}, {30, 35}, {70, 75}, {78, 80}};
     EXPECT_EQ(req->ranges_size(), expected_r.size());
     for (uint32_t i = 0; i < req->ranges_size(); ++i) {
       EXPECT_EQ(req->ranges(i).start(), expected_r[i].start);
@@ -169,4 +168,11 @@ TEST_F(GossipTest, PushAndPull) {
   EXPECT_CALL(rpc, PullData).WillOnce(pull_handle);
   GossipTask task("", &storage_, &rpc);
   task.Run();
+
+  std::vector<::Range> expects = {{5, 20}, {30, 45}, {48, 65}, {70, 80}};
+  const auto &actual = storage_.Read();
+  EXPECT_EQ(expects.size(), actual.size());
+  for (uint32_t i = 0; i < expects.size(); ++i) {
+    EXPECT_EQ(expects[i], actual[i]);
+  }
 }
