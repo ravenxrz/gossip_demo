@@ -1,21 +1,15 @@
 #pragma once
 
+#include "singleton.h"
+
 #include <mutex>
 #include <string>
 #include <unordered_map>
 
-class ConfigParser {
-public:
-  static ConfigParser &GetInstance() {
-    if (parser_ == nullptr) {
-      std::lock_guard<std::mutex> guard(mu_);
-      if (parser_ == nullptr) {
-        parser_ = new ConfigParser();
-      }
-    }
-    return *parser_;
-  }
+class ConfigParser : public Singleton<ConfigParser> {
+  SingletonClass(ConfigParser);
 
+public:
   ConfigParser(const ConfigParser &rhs) = delete;
   ConfigParser(ConfigParser &&rhs) = delete;
   ConfigParser &operator=(const ConfigParser &rhs) = delete;
@@ -28,6 +22,5 @@ public:
 private:
   ConfigParser() = default;
   static ConfigParser *parser_;
-  static std::mutex mu_;
   std::unordered_map<std::string, std::string> conf_map_;
 };

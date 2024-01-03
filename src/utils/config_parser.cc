@@ -7,7 +7,6 @@
 #include "string_utils.h"
 
 ConfigParser *ConfigParser::parser_{nullptr};
-std::mutex ConfigParser::mu_{};
 
 void ConfigParser::Init(const std::string &conf_path) {
   if (conf_path.empty()) {

@@ -5,11 +5,12 @@ class RangeStorage;
 #include "common.h"
 #include "data.pb.h"
 #include "service.h"
+#include "singleton.h"
 
 #include "brpc/server.h"
 
-// TODO(zhangxingrui): singleton
-class Server {
+class Server : public Singleton<Server> {
+  SingletonClass(Server);
 public:
   Server(addr_t addr);
 
