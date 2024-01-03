@@ -1,9 +1,10 @@
-#pragma
+#pragma once
 
 #include "error.h"
-#include "worker.h"
 
 #include <cstdint>
+
+class TaskWorker;
 
 class BaseTask {
 public:
