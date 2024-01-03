@@ -7,7 +7,12 @@
 #include "defer.h"
 #include "error.h"
 #include "gossip.pb.h"
+#include "gossip_rpc.h"
+#include "gossip_task.h"
+#include "server.h"
 #include "storage.h"
+
+// extern std::unique_ptr<Server> g_server;
 
 void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
                                 const ::WriteDataRequest *request,
@@ -44,7 +49,16 @@ void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
 
 void GossipServiceImpl::ManualGossip(
     google::protobuf::RpcController *controller, const ::EmptyMessage *request,
-    ::EmptyMessage *response, ::google::protobuf::Closure *done) {}
+    ::EmptyMessage *response, ::google::protobuf::Closure *done) {
+  defer d([done] { done->Run(); });
+  // TODO(zhangxingrui): use thread pool + async
+  // manual gossip with all peers
+  // GossipTask gossip_task;
+  // for (auto peer : g_server->GetPeers()) {
+  //   GossipTask gossip_task(peer, storage_, &GossipRpc::GetInstance());
+  //   gossip_task.Run();
+  // }
+}
 
 void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
                                  const ::GossipData *request,

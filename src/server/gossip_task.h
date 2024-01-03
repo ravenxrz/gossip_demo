@@ -1,3 +1,4 @@
+#include "igossip_rpc.h"
 #include "storage.h"
 #pragma one
 
@@ -8,8 +9,8 @@
 
 class GossipTask : public BaseTask {
 public:
-  GossipTask(addr_t peer, RangeStorage *storage)
-      : peer_(std::move(peer)), storage_(storage) {
+  GossipTask(addr_t peer, RangeStorage *storage, IGossipRpc *rpc)
+      : peer_(std::move(peer)), storage_(storage), rpc_(rpc) {
     SetTaskType(GossipTaskType);
     SetTaskState(QUERY_DATA_RANGE);
   }
@@ -43,4 +44,6 @@ private:
   std::vector<Range> peer_ranges_;
   std::vector<Range> need_push_;
   std::vector<Range> need_pull_;
+
+  IGossipRpc *rpc_;
 };

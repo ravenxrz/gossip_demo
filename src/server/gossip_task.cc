@@ -13,7 +13,7 @@ loop:
     QueryRange();
     goto loop;
   case READ_LOCAL_RANGE:
-    SetTaskState(PULL_DATA);
+    SetTaskState(DIFF_RANGE);
     ReadLocalRange();
     goto loop;
   case DIFF_RANGE:
@@ -35,25 +35,10 @@ loop:
 }
 
 void GossipTask::QueryRange() {
-  brpc::Channel channel;
-  brpc::ChannelOptions opt;
-  int32_t ret = 0;
-  if ((ret = channel.Init(peer_.c_str(), &opt)) != 0) {
-    LOG(ERROR) << "init channel failed:" << ret;
-    SetTaskStatus(INIT_RPC_CHANNEL_FAILED);
-    SetTaskState(TASK_FIN);
-    return;
-  }
-  brpc::Controller cntl;
   EmptyMessage req;
   QueryRangeResponse rsp;
-  DataService_Stub stub(&channel);
-  // TODO(zhangxingrui): async
-  stub.QueryDataRange(&cntl, &req, &rsp, nullptr); // sync call
-  if (cntl.ErrorCode() != 0) {
-    LOG(ERROR) << "query data range failed, code:" << cntl.ErrorCode()
-               << ", msg:" << cntl.ErrorText();
-    SetTaskStatus(PROCESS_RPC_FAILED);
+  if (auto ret = rpc_->QueryDataRange(peer_, &req, &rsp, nullptr); ret != OK) {
+    SetTaskStatus(ret);
     SetTaskState(TASK_FIN);
     return;
   }
@@ -73,6 +58,11 @@ void GossipTask::Diff() {
   int i = 0;
   int j = 0;
   while (i < self_ranges_.size() && j < peer_ranges_.size()) {
+    if (self_ranges_[i] == peer_ranges_[j]) {
+      i++;
+      j++;
+      continue;
+    }
     if (self_ranges_[i].end <= peer_ranges_[j].start) {
       need_push_.push_back(self_ranges_[i++]);
     } else if (self_ranges_[i].start >= peer_ranges_[j].end) {
@@ -82,30 +72,30 @@ void GossipTask::Diff() {
       if (self_ranges_[i].start < peer_ranges_[j].start &&
           self_ranges_[i].end < peer_ranges_[j].end) {
         need_push_.emplace_back(self_ranges_[i].start, peer_ranges_[j].start);
-        need_pull_.emplace_back(self_ranges_[i].end, peer_ranges_[j].end);
+        // cut
+        peer_ranges_[j].start = self_ranges_[i].end;
         i++;
       } else if (self_ranges_[i].start > peer_ranges_[j].start &&
                  self_ranges_[i].end > peer_ranges_[j].end) {
-        need_push_.emplace_back(peer_ranges_[j].end, self_ranges_[i].end);
         need_pull_.emplace_back(peer_ranges_[j].start, self_ranges_[i].start);
+        // cut
+        self_ranges_[i].start = peer_ranges_[j].end;
         j++;
       } else if (self_ranges_[i].start >= peer_ranges_[j].start &&
                  self_ranges_[j].end <= peer_ranges_[j].end) {
         if (peer_ranges_[j].start != self_ranges_[i].start) {
           need_pull_.emplace_back(peer_ranges_[j].start, self_ranges_[i].start);
         }
-        if (self_ranges_[i].end != peer_ranges_[j].end) {
-          need_pull_.emplace_back(self_ranges_[i].end, peer_ranges_[j].end);
-        }
+        // cut
+        peer_ranges_[j].start = self_ranges_[i].end;
         i++;
       } else if (self_ranges_[i].start <= peer_ranges_[j].start &&
                  self_ranges_[i].end >= peer_ranges_[j].end) {
         if (self_ranges_[i].start != peer_ranges_[j].start) {
           need_push_.emplace_back(self_ranges_[i].start, peer_ranges_[j].start);
         }
-        if (peer_ranges_[j].end != self_ranges_[i].end) {
-          need_push_.emplace_back(peer_ranges_[j].end, self_ranges_[i].end);
-        }
+        // cut
+        self_ranges_[i].start = peer_ranges_[j].end;
         j++;
       }
     }
@@ -118,13 +108,13 @@ void GossipTask::Diff() {
     need_pull_.push_back(peer_ranges_[j++]);
   }
 
-  LOG(INFO) << "need push ranges:";
+  DLOG(INFO) << "need push ranges:";
   for (const auto &r : need_push_) {
-    LOG(INFO) << r.ToString();
+    DLOG(INFO) << r.ToString();
   }
-  LOG(INFO) << "need pull rnages:";
+  DLOG(INFO) << "need pull ranges:";
   for (const auto &r : need_pull_) {
-    LOG(INFO) << r.ToString();
+    DLOG(INFO) << r.ToString();
   }
 }
 
@@ -132,55 +122,34 @@ void GossipTask::PushData() {
   if (need_push_.empty()) {
     return;
   }
-  brpc::Channel channel;
-  brpc::ChannelOptions opt;
-  int32_t ret = 0;
-  if ((ret = channel.Init(peer_.c_str(), &opt)) != 0) {
-    LOG(ERROR) << "init channel failed:" << ret;
-    SetTaskStatus(INIT_RPC_CHANNEL_FAILED);
-    SetTaskState(TASK_FIN);
-    return;
-  }
-  brpc::Controller cntl;
+
   GossipData req;
   EmptyMessage rsp;
-  GossipService_Stub stub(&channel);
   for (const auto &r : need_push_) {
     auto *d = req.add_ranges();
     d->set_start(r.start);
     d->set_end(r.end);
   }
-  // TODO(zhangxingrui): async
-  stub.PushData(&cntl, &req, &rsp, nullptr); // sync call
-  if (cntl.ErrorCode() != 0) {
-    LOG(ERROR) << "query data range failed, code:" << cntl.ErrorCode()
-               << ", msg:" << cntl.ErrorText();
-    SetTaskStatus(PROCESS_RPC_FAILED);
-    SetTaskState(TASK_FIN);
+  if (auto ret = rpc_->PushData(peer_, &req, &rsp, nullptr); ret != OK) {
+    SetTaskStatus(ret);
+    SetTaskState(TaskFin);
     return;
   }
 }
 
 void GossipTask::PullData() {
-  brpc::Channel channel;
-  brpc::ChannelOptions opt;
-  int32_t ret = 0;
-  if ((ret = channel.Init(peer_.c_str(), &opt)) != 0) {
-    LOG(ERROR) << "init channel failed:" << ret;
-    SetTaskStatus(INIT_RPC_CHANNEL_FAILED);
-    SetTaskState(TASK_FIN);
+  if (need_pull_.empty()) {
     return;
   }
-  brpc::Controller cntl;
-  EmptyMessage req;
+  GossipData req;
   GossipData rsp;
-  GossipService_Stub stub(&channel);
-  // TODO(zhangxingrui): async
-  stub.PullData(&cntl, &req, &rsp, nullptr); // sync call
-  if (cntl.ErrorCode() != 0) {
-    LOG(ERROR) << "query data range failed, code:" << cntl.ErrorCode()
-               << ", msg:" << cntl.ErrorText();
-    SetTaskStatus(PROCESS_RPC_FAILED);
+  for (const auto &r : need_pull_) {
+    auto *d = req.add_ranges();
+    d->set_start(r.start);
+    d->set_end(r.end);
+  }
+  if (auto ret = rpc_->PullData(peer_, &req, &rsp, nullptr); ret != OK) {
+    SetTaskStatus(ret);
     SetTaskState(TASK_FIN);
     return;
   }

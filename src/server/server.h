@@ -8,6 +8,7 @@ class RangeStorage;
 
 #include "brpc/server.h"
 
+// TODO(zhangxingrui): singleton
 class Server {
 public:
   Server(addr_t addr);
