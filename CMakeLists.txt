@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_ASAN "enable asn" OFF)
 option(ENABLE_GCOV "enable gcov" OFF)
+option(BUILD_UT "build ut" ON)
 
 # import module
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -27,3 +28,7 @@ if(ENABLE_GCOV)
 endif()
 
 add_subdirectory(src)
+
+if(BUILD_UT)
+  add_subdirectory(test)
+endif()
