@@ -7,6 +7,7 @@
 #pragma once
 
 #include "common.h"
+#include "mutex_lock.h"
 
 #include <deque>
 #include <mutex>
@@ -31,5 +32,5 @@ public:
   void Clear() override;
 
 private:
-  std::mutex mu_;
+  Mutex mu_;
 };

@@ -6,6 +6,7 @@
 
 #include "error.h"
 #include "glog/logging.h"
+#include "utils/mutex_lock.h"
 
 namespace {
 
@@ -22,7 +23,7 @@ bool EndCompare(const Range &lhs, const Range &rhs) {
 // TODO(zhangxingrui): Maybe use interval tree is much better
 void MemRangeStorage::Write(const Range &data) {
   DLOG(INFO) << "receive " << data.ToString();
-  std::lock_guard<std::mutex> lck(mu_);
+  LockGuard guard(&mu_);
   if (data_range_.empty()) {
     data_range_.push_back(data);
     return;
@@ -65,7 +66,7 @@ void MemRangeStorage::Write(const Range &data) {
   if (right != data_range_.end()) {
     if (Range::IsOverlap(*right, data)) {
       end = std::max(end, right->end);
-      auto v = data_range_.erase(left + 1, right + 1);
+      data_range_.erase(left + 1, right + 1);
     } else {
       if (left < right) {
         data_range_.erase(left + 1, right);
@@ -79,12 +80,11 @@ void MemRangeStorage::Write(const Range &data) {
 }
 
 std::deque<Range> MemRangeStorage ::Read() {
-  std::lock_guard<std::mutex> lck(mu_);
+  LockGuard lck(&mu_);
   return data_range_;
 }
 
 void MemRangeStorage::Clear() {
-  std::lock_guard<std::mutex> lck(mu_);
+  LockGuard lck(&mu_);
   data_range_.clear();
 }
-

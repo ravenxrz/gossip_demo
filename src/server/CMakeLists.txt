@@ -16,7 +16,7 @@ set(DEP_LIBS
 
 add_library(storage_obj OBJECT storage.cc)
 target_include_directories(storage_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(storage_obj common_obj)
+target_link_libraries(storage_obj common_obj utils_obj)
 
 add_library(flags_obj OBJECT server_flags.cc)
 target_include_directories(flags_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

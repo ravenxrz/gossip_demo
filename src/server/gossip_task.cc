@@ -42,7 +42,7 @@ void GossipTask::QueryRange() {
     SetTaskState(TASK_FIN);
     return;
   }
-  for (uint32_t i = 0; i < rsp.ranges_size(); ++i) {
+  for (int i = 0; i < rsp.ranges_size(); ++i) {
     peer_ranges_.emplace_back(rsp.ranges(i).start(), rsp.ranges(i).end());
   }
 }
@@ -55,8 +55,8 @@ void GossipTask::ReadLocalRange() {
 }
 
 void GossipTask::Diff() {
-  int i = 0;
-  int j = 0;
+  size_t i = 0;
+  size_t j = 0;
   while (i < self_ranges_.size() && j < peer_ranges_.size()) {
     if (self_ranges_[i] == peer_ranges_[j]) {
       i++;
@@ -154,7 +154,7 @@ void GossipTask::PullData() {
     return;
   }
   // write to local storage
-  for (uint32_t i = 0; i < rsp.ranges_size(); ++i) {
+  for (int i = 0; i < rsp.ranges_size(); ++i) {
     storage_->Write(Range(rsp.ranges(i).start(), rsp.ranges(i).end()));
   }
 }

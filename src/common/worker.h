@@ -1,16 +1,15 @@
 #pragma once
 
+#include "mutex_lock.h"
 #include "task.h"
 
 #include <atomic>
-#include <condition_variable>
-#include <mutex>
 #include <queue>
 #include <set>
 #include <thread>
 
-#include "gflags/gflags_declare.h"
 #include "gflags/gflags.h"
+#include "gflags/gflags_declare.h"
 
 // Simple worker, supports two ops:
 // 1. PushTask, worker will run task immediately if it's not busy
@@ -25,6 +24,7 @@ public:
 
   void PushTask(BaseTask *task);
 
+  // Notice: it's not accurate
   void PushDelayTask(BaseTask *task, uint32_t delay_ms);
 
 private:
@@ -36,14 +36,13 @@ private:
 
   std::thread *t_{nullptr};
   std::atomic<bool> exit_{false};
-  std::mutex mu_;
-  std::condition_variable cd_;
+  Mutex mu_;
+  CondVar cv_;
 
-  std::atomic<uint64_t> pending_task_cnt_{0};
   std::vector<BaseTask *> q_;
-
-  std::atomic<uint64_t> pending_delay_task_cnt_{0};
-  std::vector<std::set<BaseTask *>> *delay_q_;
-  uint64_t handle_time_;   // current delay slice
-  uint64_t handle_cursor_; // current delay cursor
+  std::set<BaseTask *> *delay_q_{nullptr};
+  int64_t base_time_us_{0};
+  int32_t cursor_{0};
+  static int64_t min_time_slice_us_;
+  static uint32_t time_slice_cnt_;
 };

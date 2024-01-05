@@ -26,11 +26,16 @@ public:
 
   void SetWorker(TaskWorker *worker) { worker_ = worker; }
 
+  void SetTimeTicket(int64_t ts) { time_ticket_ = ts; }
+
+  int64_t GetTimeTicket() const { return time_ticket_; }
+
 protected:
   enum TaskState { TaskInit, TaskFin };
 
   uint32_t task_state_{TaskInit};
   uint32_t task_status_{OK};
   uint32_t task_type_;
+  uint64_t time_ticket_;
   TaskWorker *worker_;
 };

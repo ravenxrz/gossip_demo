@@ -1,8 +1,8 @@
-#include "igossip_rpc.h"
-#include "storage.h"
-#pragma one
+#pragma once
 
 #include "common.h"
+#include "igossip_rpc.h"
+#include "storage.h"
 #include "task.h"
 
 #include <vector>
@@ -31,10 +31,10 @@ private:
   enum TaskState {
     QUERY_DATA_RANGE = 0,
     READ_LOCAL_RANGE,
-    DIFF_RANGE ,
-    PULL_DATA ,
-    PUSH_DATA ,
-    TASK_FIN 
+    DIFF_RANGE,
+    PULL_DATA,
+    PUSH_DATA,
+    TASK_FIN
   };
 
 private:

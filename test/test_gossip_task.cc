@@ -110,7 +110,7 @@ TEST_F(GossipTest, OnlyPull) {
   EXPECT_CALL(rpc, PullData)
       .WillOnce([](const std::string &addr, GossipData *req, GossipData *rsp,
                    google::protobuf::Closure *done) {
-        for (uint32_t i = 0; i < req->ranges_size(); ++i) {
+        for (int i = 0; i < req->ranges_size(); ++i) {
           auto *d = rsp->add_ranges();
           d->set_start(req->ranges(i).start());
           d->set_end(req->ranges(i).end());
@@ -145,7 +145,7 @@ TEST_F(GossipTest, PushAndPull) {
                         EmptyMessage *rsp, google::protobuf::Closure *done) {
     std::vector<::Range> expected_r = {{15, 20}, {30, 35}, {70, 75}, {78, 80}};
     EXPECT_EQ(req->ranges_size(), expected_r.size());
-    for (uint32_t i = 0; i < req->ranges_size(); ++i) {
+    for (int i = 0; i < req->ranges_size(); ++i) {
       EXPECT_EQ(req->ranges(i).start(), expected_r[i].start);
       EXPECT_EQ(req->ranges(i).end(), expected_r[i].end);
     }
@@ -156,7 +156,7 @@ TEST_F(GossipTest, PushAndPull) {
                         GossipData *rsp, google::protobuf::Closure *done) {
     std::vector<::Range> expected_r = {{5, 10}, {40, 45}, {48, 50}, {60, 65}};
     EXPECT_EQ(req->ranges_size(), expected_r.size());
-    for (uint32_t i = 0; i < req->ranges_size(); ++i) {
+    for (int i = 0; i < req->ranges_size(); ++i) {
       EXPECT_EQ(req->ranges(i).start(), expected_r[i].start);
       EXPECT_EQ(req->ranges(i).end(), expected_r[i].end);
       auto *d = rsp->add_ranges();

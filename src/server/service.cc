@@ -19,7 +19,7 @@ void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
                                 ::WriteDataResponse *response,
                                 ::google::protobuf::Closure *done) {
   defer d([done] { done->Run(); });
-  for (uint32_t i = 0; i < request->data_size(); ++i) {
+  for (int i = 0; i < request->data_size(); ++i) {
     storage_->Write(Range(request->data(i).start(), request->data(i).end()));
   }
   response->set_error_code(OK);
@@ -66,7 +66,7 @@ void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
                                  ::google::protobuf::Closure *done) {
   defer d([done] { done->Run(); });
   // TODO(zhangxingrui): async
-  for (uint32_t i = 0; i < request->ranges_size(); ++i) {
+  for (int i = 0; i < request->ranges_size(); ++i) {
     storage_->Write({request->ranges(i).start(), request->ranges(i).end()});
   }
 }
@@ -78,7 +78,7 @@ void GossipServiceImpl::PullData(google::protobuf::RpcController *controller,
   defer d([done] { done->Run(); });
   // Now that we take ranges as meta and data
   // just copy request to response and return
-  for (uint32_t i = 0; i < request->ranges_size(); ++i) {
+  for (int i = 0; i < request->ranges_size(); ++i) {
     auto *d = response->add_ranges();
     d->set_start(request->ranges(i).start());
     d->set_end(request->ranges(i).end());
