@@ -3,8 +3,8 @@
 #include "butil/string_splitter.h"
 #include "butil/strings/string_piece.h"
 
-inline void SplitString(const std::string &raw_str, char d,
-                        std::vector<std::string> *result) {
+inline void SplitString(const std::string& raw_str, char d,
+                        std::vector<std::string>* result) {
   result->clear();
   for (butil::StringSplitter splitter(butil::StringPiece(raw_str), d); splitter;
        splitter++) {
@@ -12,7 +12,7 @@ inline void SplitString(const std::string &raw_str, char d,
   }
 }
 
-inline void StrTrim(std::string *raw_str) {
+inline void StrTrim(std::string* raw_str) {
   // remove last spaces first
   auto lpos = raw_str->find_last_not_of(' ');
   if (lpos != std::string::npos) {
@@ -24,7 +24,7 @@ inline void StrTrim(std::string *raw_str) {
   }
 }
 
-inline bool StrStartsWith(const std::string &raw_str,
-                          const std::string &start) {
+inline bool StrStartsWith(const std::string& raw_str,
+                          const std::string& start) {
   return raw_str.find(start) == 0;
 }

@@ -10,18 +10,18 @@
 
 namespace {
 
-bool StartCompare(const Range &lhs, const Range &rhs) {
+bool StartCompare(const Range& lhs, const Range& rhs) {
   return lhs.start < rhs.start;
 }
 
-bool EndCompare(const Range &lhs, const Range &rhs) {
+bool EndCompare(const Range& lhs, const Range& rhs) {
   return lhs.end < rhs.end;
 }
 
-} // namespace
+}  // namespace
 
 // TODO(zhangxingrui): Maybe use interval tree is much better
-void MemRangeStorage::Write(const Range &data) {
+void MemRangeStorage::Write(const Range& data) {
   DLOG(INFO) << "receive " << data.ToString();
   LockGuard guard(&mu_);
   if (data_range_.empty()) {
@@ -50,7 +50,7 @@ void MemRangeStorage::Write(const Range &data) {
     } else if (o1) {
       left = may_left;
       start = left->start;
-    } // !o1
+    }  // !o1
   } else {
     if (!Range::IsOverlap(*left, data)) {
       data_range_.push_front(data);
@@ -70,7 +70,7 @@ void MemRangeStorage::Write(const Range &data) {
     } else {
       if (left < right) {
         data_range_.erase(left + 1, right);
-      } // if left == right, do nothing
+      }  // if left == right, do nothing
     }
   } else {
     data_range_.erase(left + 1, right);

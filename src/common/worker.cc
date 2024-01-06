@@ -22,10 +22,10 @@ DEFINE_uint32(
 DEFINE_uint32(
     task_max_delay_ms, 60 * 1000 + 1,
     "task max delay time(exclusive), doesnt support modify at run time");
-static bool validate_task_min_delay_slice_ms(const char *name, uint32_t val) {
+static bool validate_task_min_delay_slice_ms(const char* name, uint32_t val) {
   return val >= 1;
 }
-static bool validate_task_max_delay_ms(const char *name, uint32_t val) {
+static bool validate_task_max_delay_ms(const char* name, uint32_t val) {
   return val >= FLAGS_task_min_delay_slice_ms;
 }
 DEFINE_validator(task_min_delay_slice_ms, validate_task_min_delay_slice_ms);
@@ -36,7 +36,7 @@ uint32_t TaskWorker::time_slice_cnt_;
 
 TaskWorker::TaskWorker() : base_time_us_(0), cursor_(0) {
   time_slice_cnt_ = FLAGS_task_max_delay_ms / FLAGS_task_min_delay_slice_ms;
-  delay_q_ = new std::set<BaseTask *>[time_slice_cnt_];
+  delay_q_ = new std::set<BaseTask*>[time_slice_cnt_];
   min_time_slice_us_ = FLAGS_task_min_delay_slice_ms * 1000;
 }
 
@@ -50,11 +50,11 @@ TaskWorker::~TaskWorker() {
   }
 
   // delete not running task
-  for (auto *task : q_) {
+  for (auto* task : q_) {
     delete task;
   }
   for (uint32_t i = 0; i < time_slice_cnt_; ++i) {
-    for (auto *task : delay_q_[i]) {
+    for (auto* task : delay_q_[i]) {
       delete task;
     }
   }
@@ -77,8 +77,8 @@ void TaskWorker::ThreadMain() {
 }
 
 void TaskWorker::Handle() {
-  std::vector<BaseTask *> doing_q;
-  std::set<BaseTask *> delay_doing_q;
+  std::vector<BaseTask*> doing_q;
+  std::set<BaseTask*> delay_doing_q;
   {
     LockGuard guard(&mu_);
     if (!q_.empty()) {
@@ -88,11 +88,11 @@ void TaskWorker::Handle() {
       delay_doing_q.swap(delay_q_[cursor_ % time_slice_cnt_]);
     }
   }
-  for (auto *task : doing_q) {
+  for (auto* task : doing_q) {
     task->Run();
   }
   int64_t now = CurrentTimeInUs();
-  for (auto *task : delay_doing_q) {
+  for (auto* task : delay_doing_q) {
     assert(now >= task->GetTimeTicket());
     task->Run();
   }
@@ -118,9 +118,10 @@ void TaskWorker::WaitForTask() {
     wait_time = (min_time_slice_us_ - (now_us - base_time_us_));
   }
 
-  if (cv_.WaitFor(&mu_,
-                  std::chrono::microseconds(wait_time), // go to next time slice
-                  [this] { return !q_.empty() || exit_; })) {
+  if (cv_.WaitFor(
+          &mu_,
+          std::chrono::microseconds(wait_time),  // go to next time slice
+          [this] { return !q_.empty() || exit_; })) {
     if (base_time_us_ != 0) {
       now_us = CurrentTimeInUs();
       if (auto delta = now_us - (base_time_us_ + min_time_slice_us_);
@@ -134,7 +135,7 @@ void TaskWorker::WaitForTask() {
   }
 }
 
-void TaskWorker::PushTask(BaseTask *task) {
+void TaskWorker::PushTask(BaseTask* task) {
   assert(task->GetWorker() == nullptr || task->GetWorker() == this);
   task->SetWorker(this);
   LockGuard guard(&mu_);
@@ -144,7 +145,7 @@ void TaskWorker::PushTask(BaseTask *task) {
   }
 }
 
-void TaskWorker::PushDelayTask(BaseTask *task, uint32_t delay_ms) {
+void TaskWorker::PushDelayTask(BaseTask* task, uint32_t delay_ms) {
   assert(delay_ms >= FLAGS_task_min_delay_slice_ms);
   assert(delay_ms < FLAGS_task_max_delay_ms);
   assert(task->GetWorker() == nullptr || task->GetWorker() == this);

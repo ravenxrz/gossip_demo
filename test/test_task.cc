@@ -9,22 +9,23 @@
 DECLARE_uint32(task_min_delay_slice_ms);
 DECLARE_uint32(task_max_delay_ms);
 
-template <typename W> class WaitTask : public BaseTask {
-public:
-  WaitTask(W *waiter) : waiter_(waiter) {}
+template <typename W>
+class WaitTask : public BaseTask {
+ public:
+  WaitTask(W* waiter) : waiter_(waiter) {}
 
   void Run() override {
     waiter_->Done();
     delete this;
   }
 
-private:
-  W *waiter_;
+ private:
+  W* waiter_;
 };
 
 class CountTask : public BaseTask {
-public:
-  CountTask(WaiterGroup *waiter, uint64_t *count)
+ public:
+  CountTask(WaiterGroup* waiter, uint64_t* count)
       : waiter_(waiter), count_(count) {}
 
   void Run() override {
@@ -33,14 +34,14 @@ public:
     delete this;
   }
 
-private:
-  WaiterGroup *waiter_;
-  uint64_t *count_;
+ private:
+  WaiterGroup* waiter_;
+  uint64_t* count_;
 };
 
 class DelayTask : public BaseTask {
-public:
-  DelayTask(uint64_t *val, WaiterGroup *wg) : val_(val), wg_(wg) {}
+ public:
+  DelayTask(uint64_t* val, WaiterGroup* wg) : val_(val), wg_(wg) {}
 
   void Run() override {
     *val_ = CurrentTimeInUs();
@@ -48,9 +49,9 @@ public:
     delete this;
   }
 
-private:
-  uint64_t *val_;
-  WaiterGroup *wg_;
+ private:
+  uint64_t* val_;
+  WaiterGroup* wg_;
 };
 
 TEST(WorkerTest, WaiterTest) {

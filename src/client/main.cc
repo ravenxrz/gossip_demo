@@ -34,7 +34,7 @@ DEFINE_string(conf_file, "", "cluster config file");
 std::unique_ptr<Client> g_client;
 std::unique_ptr<OpCntl> g_op_cntl;
 
-void InitLogSystem(char **argv) {
+void InitLogSystem(char** argv) {
   FLAGS_log_dir = "./client_log";
   FLAGS_minloglevel = google::INFO;
   FLAGS_stderrthreshold = google::INFO;
@@ -110,14 +110,14 @@ void InputLoop() {
   }
 }
 
-void HandleWritline(const std::string &line) {
+void HandleWritline(const std::string& line) {
   std::vector<std::string> pattern;
   SplitString(line, ':', &pattern);
   if (pattern.size() != 3) {
     LOG(ERROR) << "invalid write pattern(eg: write:node:start,end):" << line;
     return;
   }
-  char *str_end = nullptr;
+  char* str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
   std::vector<std::string> num;
   SplitString(pattern[2], ',', &num);
@@ -131,7 +131,7 @@ void HandleWritline(const std::string &line) {
   g_op_cntl->Write(node_id, write_data);
 }
 
-void HandleReadLine(const std::string &line) {
+void HandleReadLine(const std::string& line) {
   std::vector<std::string> pattern;
   SplitString(line, ':', &pattern);
   if (pattern.size() != 2) {
@@ -139,19 +139,19 @@ void HandleReadLine(const std::string &line) {
     return;
   }
   std::string read_result;
-  char *str_end = nullptr;
+  char* str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
   g_op_cntl->Read(node_id);
 }
 
-void HandleClearline(const std::string &line) {
+void HandleClearline(const std::string& line) {
   std::vector<std::string> pattern;
   SplitString(line, ':', &pattern);
   if (pattern.size() != 2) {
     LOG(ERROR) << "invalid read pattern: " << line;
     return;
   }
-  char *str_end = nullptr;
+  char* str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
   g_op_cntl->Clear(node_id);
 }
@@ -181,13 +181,11 @@ void ParseOpFile() {
       } else {
         LOG(ERROR) << "invalid op line:" << line;
       }
-    } catch (...) {
-      LOG(ERROR) << "parse file error, with line:" << line;
-    }
+    } catch (...) { LOG(ERROR) << "parse file error, with line:" << line; }
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
   InitLogSystem(argv);
   InitConf();

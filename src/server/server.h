@@ -16,7 +16,7 @@ class Server : public Singleton<Server> {
   SingletonClass(Server);
   Server();
 
-public:
+ public:
   ~Server();
 
   int32_t Init();
@@ -27,19 +27,19 @@ public:
 
   addr_t GetAddr() const { return self_; }
 
-  void RegisterPeer(const addr_t &peer);
+  void RegisterPeer(const addr_t& peer);
 
-  const std::set<addr_t> &GetPeers() const { return peers_; }
+  const std::set<addr_t>& GetPeers() const { return peers_; }
 
-private:
+ private:
   void StartGossip();
 
   addr_t self_;
   std::set<addr_t> peers_;
 
   TaskWorker worker_;
-  Timer *timer_{nullptr};
-  RangeStorage *storage_{nullptr};
+  Timer* timer_{nullptr};
+  RangeStorage* storage_{nullptr};
   brpc::Server rpc_server_;
   DataServiceImpl data_service_;
   GossipServiceImpl gossip_service_;

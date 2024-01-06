@@ -8,7 +8,7 @@
 class TaskWorker;
 
 class BaseTask {
-public:
+ public:
   BaseTask() { SetTaskState(TaskInit); }
 
   virtual ~BaseTask() = default;
@@ -25,7 +25,7 @@ public:
 
   void SetTaskType(uint32_t task_type) { task_type = task_type; }
 
-  void SetWorker(TaskWorker *worker) { worker_ = worker; }
+  void SetWorker(TaskWorker* worker) { worker_ = worker; }
 
   void SetTimeTicket(int64_t ts) { time_ticket_ = ts; }
 
@@ -33,24 +33,24 @@ public:
 
   void TaskDone() { delete this; }
 
-  TaskWorker *GetWorker() const { return worker_; }
+  TaskWorker* GetWorker() const { return worker_; }
 
-protected:
+ protected:
   enum TaskState { TaskInit, TaskFin };
 
   uint32_t task_state_{TaskInit};
   uint32_t task_status_{OK};
   uint32_t task_type_;
   uint64_t time_ticket_{0};
-  TaskWorker *worker_{nullptr};
+  TaskWorker* worker_{nullptr};
 };
 
 class InstantTask : public BaseTask {
-public:
-  InstantTask(BaseTask *task) : task_(task) {}
+ public:
+  InstantTask(BaseTask* task) : task_(task) {}
 
   void Run() override { task_->Run(); }
 
-private:
-  BaseTask *task_;
+ private:
+  BaseTask* task_;
 };

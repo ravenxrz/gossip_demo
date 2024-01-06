@@ -7,9 +7,9 @@
 #include "brpc/channel.h"
 #include "brpc/controller.h"
 
-int32_t GossipRpc::QueryDataRange(const std::string &addr, EmptyMessage *req,
-                                  QueryRangeResponse *rsp,
-                                  google::protobuf::Closure *done) {
+int32_t GossipRpc::QueryDataRange(const std::string& addr, EmptyMessage* req,
+                                  QueryRangeResponse* rsp,
+                                  google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -30,9 +30,9 @@ int32_t GossipRpc::QueryDataRange(const std::string &addr, EmptyMessage *req,
   return OK;
 }
 
-int32_t GossipRpc::PushData(const std::string &addr, GossipData *req,
-                            EmptyMessage *rsp,
-                            google::protobuf::Closure *done) {
+int32_t GossipRpc::PushData(const std::string& addr, GossipData* req,
+                            EmptyMessage* rsp,
+                            google::protobuf::Closure* done) {
 
   defer d([done] {
     if (done != nullptr) {
@@ -54,8 +54,8 @@ int32_t GossipRpc::PushData(const std::string &addr, GossipData *req,
   return OK;
 }
 
-int32_t GossipRpc::PullData(const std::string &addr, GossipData *req,
-                            GossipData *rsp, google::protobuf::Closure *done) {
+int32_t GossipRpc::PullData(const std::string& addr, GossipData* req,
+                            GossipData* rsp, google::protobuf::Closure* done) {
 
   defer d([done] {
     if (done != nullptr) {

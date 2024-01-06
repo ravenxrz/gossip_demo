@@ -3,7 +3,7 @@
 #include "mutex_lock.h"
 
 class WaiterGroup {
-public:
+ public:
   WaiterGroup(uint32_t wait_num) : wait_num_(wait_num) {}
 
   void Wait() {
@@ -25,14 +25,14 @@ public:
     wait_num_ = num;
   }
 
-private:
+ private:
   uint32_t wait_num_{0};
   Mutex mu_;
   CondVar cv_;
 };
 
 class Waiter {
-public:
+ public:
   Waiter() : wg(1) {}
 
   void Wait() { wg.Wait(); }
@@ -41,6 +41,6 @@ public:
 
   void Reset() { wg.Reset(1); }
 
-private:
+ private:
   WaiterGroup wg;
 };

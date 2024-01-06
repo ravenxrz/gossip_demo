@@ -9,29 +9,29 @@
 void GossipTask::Run() {
 loop:
   switch (GetTaskState()) {
-  case QUERY_DATA_RANGE:
-    SetTaskState(READ_LOCAL_RANGE);
-    QueryRange();
-    goto loop;
-  case READ_LOCAL_RANGE:
-    SetTaskState(DIFF_RANGE);
-    ReadLocalRange();
-    goto loop;
-  case DIFF_RANGE:
-    SetTaskState(PULL_DATA);
-    Diff();
-    goto loop;
-  case PULL_DATA:
-    SetTaskState(PUSH_DATA);
-    PullData();
-    goto loop;
-  case PUSH_DATA:
-    SetTaskState(TASK_FIN);
-    PushData();
-    goto loop;
-  case TASK_FIN:
-  default:
-    break;
+    case QUERY_DATA_RANGE:
+      SetTaskState(READ_LOCAL_RANGE);
+      QueryRange();
+      goto loop;
+    case READ_LOCAL_RANGE:
+      SetTaskState(DIFF_RANGE);
+      ReadLocalRange();
+      goto loop;
+    case DIFF_RANGE:
+      SetTaskState(PULL_DATA);
+      Diff();
+      goto loop;
+    case PULL_DATA:
+      SetTaskState(PUSH_DATA);
+      PullData();
+      goto loop;
+    case PUSH_DATA:
+      SetTaskState(TASK_FIN);
+      PushData();
+      goto loop;
+    case TASK_FIN:
+    default:
+      break;
   }
   if (GetTaskTSatus()) {
     LOG(ERROR) << "gossip error with error:" << GetTaskTSatus();
@@ -53,8 +53,8 @@ void GossipTask::QueryRange() {
 }
 
 void GossipTask::ReadLocalRange() {
-  const auto &ranges = storage_->Read();
-  for (const auto &r : ranges) {
+  const auto& ranges = storage_->Read();
+  for (const auto& r : ranges) {
     self_ranges_.push_back(r);
   }
 }
@@ -116,13 +116,13 @@ void GossipTask::Diff() {
   if (!need_push_.empty()) {
     DLOG(INFO) << "need push ranges to:" << peer_;
   }
-  for (const auto &r : need_push_) {
+  for (const auto& r : need_push_) {
     DLOG(INFO) << r.ToString();
   }
   if (!need_pull_.empty()) {
     DLOG(INFO) << "need pull ranges from:" << peer_;
   }
-  for (const auto &r : need_pull_) {
+  for (const auto& r : need_pull_) {
     DLOG(INFO) << r.ToString();
   }
 }
@@ -135,8 +135,8 @@ void GossipTask::PushData() {
   GossipData req;
   req.set_addr(Server::GetInstance().GetAddr());
   EmptyMessage rsp;
-  for (const auto &r : need_push_) {
-    auto *d = req.add_ranges();
+  for (const auto& r : need_push_) {
+    auto* d = req.add_ranges();
     d->set_start(r.start);
     d->set_end(r.end);
   }
@@ -154,8 +154,8 @@ void GossipTask::PullData() {
   GossipData req;
   GossipData rsp;
   req.set_addr(Server::GetInstance().GetAddr());
-  for (const auto &r : need_pull_) {
-    auto *d = req.add_ranges();
+  for (const auto& r : need_pull_) {
+    auto* d = req.add_ranges();
     d->set_start(r.start);
     d->set_end(r.end);
   }

@@ -12,9 +12,9 @@ using UnRegisterCB = std::function<void(timer_task_id_t)>;
 
 // Thread-unsafe
 class Timer {
-public:
+ public:
   // timer task runs on `worker`
-  Timer(TaskWorker *worker) : worker_(worker) {}
+  Timer(TaskWorker* worker) : worker_(worker) {}
 
   ~Timer();
 
@@ -22,10 +22,10 @@ public:
 
   bool UnRegister(timer_task_id_t id, UnRegisterCB cb);
 
-private:
+ private:
   timer_task_id_t GenTaskId() { return id_gen_++; }
 
-  TaskWorker *const worker_{nullptr};
+  TaskWorker* const worker_{nullptr};
   std::atomic<timer_task_id_t> id_gen_;
-  std::unordered_map<timer_task_id_t, BaseTask *> tasks_;
+  std::unordered_map<timer_task_id_t, BaseTask*> tasks_;
 };

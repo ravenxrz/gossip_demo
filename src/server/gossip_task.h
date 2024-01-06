@@ -8,8 +8,8 @@
 #include <vector>
 
 class GossipTask : public BaseTask {
-public:
-  GossipTask(addr_t peer, RangeStorage *storage, IGossipRpc *rpc)
+ public:
+  GossipTask(addr_t peer, RangeStorage* storage, IGossipRpc* rpc)
       : peer_(std::move(peer)), storage_(storage), rpc_(rpc) {
     SetTaskType(GossipTaskType);
     SetTaskState(QUERY_DATA_RANGE);
@@ -17,7 +17,7 @@ public:
 
   void Run() override;
 
-private:
+ private:
   void QueryRange();
 
   void ReadLocalRange();
@@ -37,13 +37,13 @@ private:
     TASK_FIN
   };
 
-private:
+ private:
   addr_t peer_;
-  RangeStorage *storage_;
+  RangeStorage* storage_;
   std::vector<Range> self_ranges_;
   std::vector<Range> peer_ranges_;
   std::vector<Range> need_push_;
   std::vector<Range> need_pull_;
 
-  IGossipRpc *rpc_;
+  IGossipRpc* rpc_;
 };

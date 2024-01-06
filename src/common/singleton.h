@@ -2,10 +2,11 @@
 
 #include "macro.h"
 
-template <typename T> class Singleton {
-public:
+template <typename T>
+class Singleton {
+ public:
   Singleton() = default;
-  static T &GetInstance() {
+  static T& GetInstance() {
     static T val;
     return val;
   }

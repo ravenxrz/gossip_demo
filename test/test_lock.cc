@@ -1,31 +1,31 @@
-#include "mutex_lock.h"
 #include <queue>
 #include <thread>
+#include "mutex_lock.h"
 
 #include "gtest/gtest.h"
 
 TEST(MutexTest, SimpleCounter) {
   struct Adder1 {
-    Adder1(int *val) : val_(val) {}
-    void operator()(Mutex *mu, int count) {
+    Adder1(int* val) : val_(val) {}
+    void operator()(Mutex* mu, int count) {
       mu->Lock();
       for (int i = 0; i < count; i++) {
         (*val_)++;
       }
       mu->Unlock();
     }
-    int *val_;
+    int* val_;
   };
 
   struct Adder2 {
-    Adder2(int *val) : val_(val) {}
-    void operator()(Mutex *mu, int count) {
+    Adder2(int* val) : val_(val) {}
+    void operator()(Mutex* mu, int count) {
       LockGuard guard(mu);
       for (int i = 0; i < count; i++) {
         (*val_)++;
       }
     }
-    int *val_;
+    int* val_;
   };
 
   constexpr int tn = 10;
@@ -41,7 +41,7 @@ TEST(MutexTest, SimpleCounter) {
       threads.emplace_back(Adder2(&count), &mu, add_per_thread);
     }
   }
-  for (auto &t : threads) {
+  for (auto& t : threads) {
     t.join();
   }
   EXPECT_EQ(count, add_per_thread * tn);
@@ -52,8 +52,8 @@ TEST(CondVarTest, SimpleQueue) {
   CondVar cv;
   std::queue<int> q;
   struct Producure {
-    Producure(std::queue<int> *q) : q_(q) {}
-    void operator()(CondVar *cv) {
+    Producure(std::queue<int>* q) : q_(q) {}
+    void operator()(CondVar* cv) {
       usleep(10000);
       q_->push(1);
       if (rand() & 1) {
@@ -63,7 +63,7 @@ TEST(CondVarTest, SimpleQueue) {
       }
     }
 
-    std::queue<int> *q_;
+    std::queue<int>* q_;
   };
 
   std::thread t(Producure(&q), &cv);

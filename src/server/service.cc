@@ -14,10 +14,10 @@
 
 // extern std::unique_ptr<Server> g_server;
 
-void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
-                                const ::WriteDataRequest *request,
-                                ::WriteDataResponse *response,
-                                ::google::protobuf::Closure *done) {
+void DataServiceImpl::WriteData(google::protobuf::RpcController* controller,
+                                const ::WriteDataRequest* request,
+                                ::WriteDataResponse* response,
+                                ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -30,16 +30,16 @@ void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
 }
 
 void DataServiceImpl::QueryDataRange(
-    google::protobuf::RpcController *controller, const ::EmptyMessage *request,
-    ::QueryRangeResponse *response, ::google::protobuf::Closure *done) {
+    google::protobuf::RpcController* controller, const ::EmptyMessage* request,
+    ::QueryRangeResponse* response, ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
     }
   });
-  const auto &ranges = storage_->Read();
-  for (const auto &r : ranges) {
-    auto *d = response->add_ranges();
+  const auto& ranges = storage_->Read();
+  for (const auto& r : ranges) {
+    auto* d = response->add_ranges();
     d->set_start(r.start);
     d->set_end(r.end);
   }
@@ -47,10 +47,10 @@ void DataServiceImpl::QueryDataRange(
   // cntl->response_attachment().append(ss.str());
 }
 
-void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
-                                const ::EmptyMessage *request,
-                                ::EmptyMessage *response,
-                                ::google::protobuf::Closure *done) {
+void DataServiceImpl::ClearData(google::protobuf::RpcController* controller,
+                                const ::EmptyMessage* request,
+                                ::EmptyMessage* response,
+                                ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -60,8 +60,8 @@ void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
 }
 
 void GossipServiceImpl::ManualGossip(
-    google::protobuf::RpcController *controller, const ::EmptyMessage *request,
-    ::EmptyMessage *response, ::google::protobuf::Closure *done) {
+    google::protobuf::RpcController* controller, const ::EmptyMessage* request,
+    ::EmptyMessage* response, ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -76,10 +76,10 @@ void GossipServiceImpl::ManualGossip(
   // }
 }
 
-void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
-                                 const ::GossipData *request,
-                                 ::EmptyMessage *response,
-                                 ::google::protobuf::Closure *done) {
+void GossipServiceImpl::PushData(google::protobuf::RpcController* controller,
+                                 const ::GossipData* request,
+                                 ::EmptyMessage* response,
+                                 ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -94,10 +94,10 @@ void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
   }
 }
 
-void GossipServiceImpl::PullData(google::protobuf::RpcController *controller,
-                                 const ::GossipData *request,
-                                 ::GossipData *response,
-                                 ::google::protobuf::Closure *done) {
+void GossipServiceImpl::PullData(google::protobuf::RpcController* controller,
+                                 const ::GossipData* request,
+                                 ::GossipData* response,
+                                 ::google::protobuf::Closure* done) {
   defer d([done] {
     if (done != nullptr) {
       done->Run();
@@ -107,7 +107,7 @@ void GossipServiceImpl::PullData(google::protobuf::RpcController *controller,
   // Now that we take ranges as meta and data
   // just copy request to response and return
   for (int i = 0; i < request->ranges_size(); ++i) {
-    auto *d = response->add_ranges();
+    auto* d = response->add_ranges();
     d->set_start(request->ranges(i).start());
     d->set_end(request->ranges(i).end());
   }

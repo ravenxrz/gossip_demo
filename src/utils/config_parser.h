@@ -9,18 +9,18 @@
 class ConfigParser : public Singleton<ConfigParser> {
   SingletonClass(ConfigParser);
 
-public:
-  ConfigParser(const ConfigParser &rhs) = delete;
-  ConfigParser(ConfigParser &&rhs) = delete;
-  ConfigParser &operator=(const ConfigParser &rhs) = delete;
-  ConfigParser &operator=(ConfigParser &&rhs) = delete;
+ public:
+  ConfigParser(const ConfigParser& rhs) = delete;
+  ConfigParser(ConfigParser&& rhs) = delete;
+  ConfigParser& operator=(const ConfigParser& rhs) = delete;
+  ConfigParser& operator=(ConfigParser&& rhs) = delete;
 
-  void Init(const std::string &conf_path);
+  void Init(const std::string& conf_path);
 
-  bool Get(const std::string &flag_name, std::string *flag_value);
+  bool Get(const std::string& flag_name, std::string* flag_value);
 
-private:
+ private:
   ConfigParser() = default;
-  static ConfigParser *parser_;
+  static ConfigParser* parser_;
   std::unordered_map<std::string, std::string> conf_map_;
 };

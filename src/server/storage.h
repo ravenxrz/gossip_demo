@@ -13,24 +13,24 @@
 #include <mutex>
 
 class RangeStorage {
-public:
+ public:
   virtual ~RangeStorage() = default;
-  virtual void Write(const Range &data) = 0;
+  virtual void Write(const Range& data) = 0;
   virtual std::deque<Range> Read() = 0;
   virtual void Clear() = 0;
 
-protected:
+ protected:
   std::deque<Range> data_range_;
 };
 
 // We only save data as range
 // like [1 - 100), [2, 5)
 class MemRangeStorage : public RangeStorage {
-public:
-  void Write(const Range &data) override;
+ public:
+  void Write(const Range& data) override;
   std::deque<Range> Read() override;
   void Clear() override;
 
-private:
+ private:
   Mutex mu_;
 };

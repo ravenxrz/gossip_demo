@@ -2,5 +2,7 @@ clear:-1
 read:-1
 write:-1:1,2
 write:-1:4,7
-write:0:8,10
-read:-1
+write:0:8,15
+write:1:13,18
+write:2:17,19
+write:3:18,23

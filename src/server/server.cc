@@ -12,12 +12,15 @@ DECLARE_uint32(port);
 DECLARE_uint32(gossip_interval_ms);
 
 Server::Server()
-    : storage_(new MemRangeStorage), data_service_(storage_),
+    : storage_(new MemRangeStorage),
+      data_service_(storage_),
       gossip_service_(storage_) {}
 
-Server::~Server() { delete timer_; }
+Server::~Server() {
+  delete timer_;
+}
 
-void Server::RegisterPeer(const addr_t &peer) {
+void Server::RegisterPeer(const addr_t& peer) {
   if (peer == self_) {
     LOG(ERROR) << "can't register myself as peer";
     return;

@@ -2,7 +2,7 @@
 
 #include "glog/logging.h"
 
-void OpCntl::Write(node_id_t node, const Range &w) {
+void OpCntl::Write(node_id_t node, const Range& w) {
   int ret = OK;
   if (node == node_id_t(-1)) {
     for (auto node : client_->ListAllNodes()) {
