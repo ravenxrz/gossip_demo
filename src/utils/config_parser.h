@@ -21,6 +21,5 @@ class ConfigParser : public Singleton<ConfigParser> {
 
  private:
   ConfigParser() = default;
-  static ConfigParser* parser_;
   std::unordered_map<std::string, std::string> conf_map_;
 };

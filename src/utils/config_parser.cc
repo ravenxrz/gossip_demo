@@ -6,8 +6,6 @@
 #include "glog/logging.h"
 #include "string_utils.h"
 
-ConfigParser* ConfigParser::parser_{nullptr};
-
 void ConfigParser::Init(const std::string& conf_path) {
   if (conf_path.empty()) {
     LOG(ERROR) << "conf file is empty, use default flags";

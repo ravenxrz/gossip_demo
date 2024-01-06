@@ -33,8 +33,8 @@ loop:
     default:
       break;
   }
-  if (GetTaskTSatus()) {
-    LOG(ERROR) << "gossip error with error:" << GetTaskTSatus();
+  if (GetTaskStatus()) {
+    LOG(ERROR) << "gossip error with error:" << GetTaskStatus();
   }
   TaskDone();
 }
