@@ -31,6 +31,8 @@ class Server : public Singleton<Server> {
 
   const std::set<addr_t>& GetPeers() const { return peers_; }
 
+  TaskWorker* GetWorker() { return &worker_; }
+
  private:
   void StartGossip();
 

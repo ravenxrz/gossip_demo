@@ -67,13 +67,12 @@ void GossipServiceImpl::ManualGossip(
       done->Run();
     }
   });
-  // TODO(zhangxingrui): use thread pool + async
-  // manual gossip with all peers
-  // GossipTask gossip_task;
-  // for (auto peer : g_server->GetPeers()) {
-  //   GossipTask gossip_task(peer, storage_, &GossipRpc::GetInstance());
-  //   gossip_task.Run();
-  // }
+  LOG(INFO) << "trigger gossip with all peers";
+  for (auto peer : Server::GetInstance().GetPeers()) {
+    GossipTask* task =
+        new GossipTask(peer, storage_, &GossipRpc::GetInstance());
+    Server::GetInstance().GetWorker()->PushTask(task);
+  }
 }
 
 void GossipServiceImpl::PushData(google::protobuf::RpcController* controller,
