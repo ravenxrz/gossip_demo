@@ -12,7 +12,7 @@ option(BUILD_UT "build ut" ON)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb -fPIC -Wno-error -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb -fPIC -Werror -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall -Werror -g -ggdb -fPIC -fno-omit-frame-pointer")
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)

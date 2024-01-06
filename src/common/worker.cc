@@ -46,6 +46,16 @@ TaskWorker::~TaskWorker() {
   cv_.NotifyAll();
   t_->join();
   delete t_;
+
+  // delete not running task
+  for (auto *task : q_) {
+    delete task;
+  }
+  for (uint32_t i = 0; i < time_slice_cnt_; ++i) {
+    for (auto *task : delay_q_[i]) {
+      delete task;
+    }
+  }
   delete[] delay_q_;
 }
 
@@ -123,6 +133,8 @@ void TaskWorker::WaitForTask() {
 }
 
 void TaskWorker::PushTask(BaseTask *task) {
+  assert(task->GetWorker() == nullptr || task->GetWorker() == this);
+  task->SetWorker(this);
   LockGuard guard(&mu_);
   q_.push_back(task);
   if (q_.size() == 1) {
@@ -133,6 +145,8 @@ void TaskWorker::PushTask(BaseTask *task) {
 void TaskWorker::PushDelayTask(BaseTask *task, uint32_t delay_ms) {
   assert(delay_ms >= FLAGS_task_min_delay_slice_ms);
   assert(delay_ms < FLAGS_task_max_delay_ms);
+  assert(task->GetWorker() == nullptr || task->GetWorker() == this);
+  task->SetWorker(this);
   int64_t now_us = CurrentTimeInUs();
   task->SetTimeTicket(now_us + delay_ms * 1000);
   LockGuard guard(&mu_);

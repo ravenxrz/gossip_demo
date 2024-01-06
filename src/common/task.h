@@ -2,6 +2,7 @@
 
 #include "error.h"
 
+#include <atomic>
 #include <cstdint>
 
 class TaskWorker;
@@ -30,12 +31,26 @@ public:
 
   int64_t GetTimeTicket() const { return time_ticket_; }
 
+  void TaskDone() { delete this; }
+
+  TaskWorker *GetWorker() const { return worker_; }
+
 protected:
   enum TaskState { TaskInit, TaskFin };
 
   uint32_t task_state_{TaskInit};
   uint32_t task_status_{OK};
   uint32_t task_type_;
-  uint64_t time_ticket_;
-  TaskWorker *worker_;
+  uint64_t time_ticket_{0};
+  TaskWorker *worker_{nullptr};
+};
+
+class InstantTask : public BaseTask {
+public:
+  InstantTask(BaseTask *task) : task_(task) {}
+
+  void Run() override { task_->Run(); }
+
+private:
+  BaseTask *task_;
 };
