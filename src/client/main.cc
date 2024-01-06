@@ -119,7 +119,6 @@ void HandleWritline(const std::string &line) {
   }
   char *str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
-  int32_t ret = OK;
   std::vector<std::string> num;
   SplitString(pattern[2], ',', &num);
   if (num.size() != 2) {
@@ -139,7 +138,6 @@ void HandleReadLine(const std::string &line) {
     LOG(ERROR) << "invalid read pattern: " << line;
     return;
   }
-  int32_t ret = OK;
   std::string read_result;
   char *str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
@@ -153,7 +151,6 @@ void HandleClearline(const std::string &line) {
     LOG(ERROR) << "invalid read pattern: " << line;
     return;
   }
-  int32_t ret = OK;
   char *str_end = nullptr;
   auto node_id = std::strtoll(pattern[1].c_str(), &str_end, 10);
   g_op_cntl->Clear(node_id);
@@ -171,7 +168,6 @@ void ParseOpFile() {
     return;
   }
   std::string line;
-  int64_t node_id = -1;
   while (in >> line) {
     LOG(INFO) << "line content: " << line;
     StrTrim(&line);

@@ -80,7 +80,7 @@ int32_t Client::Read(node_id_t id, std::string *result) {
     return cntl.ErrorCode();
   }
   std::stringstream ss;
-  for (uint32_t i = 0; i < rsp.ranges_size(); ++i) {
+  for (int i = 0; i < rsp.ranges_size(); ++i) {
     ss << "[" << rsp.ranges(i).start() << "," << rsp.ranges(i).end() << ')';
   }
   *result = ss.str();

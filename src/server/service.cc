@@ -18,7 +18,11 @@ void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
                                 const ::WriteDataRequest *request,
                                 ::WriteDataResponse *response,
                                 ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   for (int i = 0; i < request->data_size(); ++i) {
     storage_->Write(Range(request->data(i).start(), request->data(i).end()));
   }
@@ -28,7 +32,11 @@ void DataServiceImpl::WriteData(google::protobuf::RpcController *controller,
 void DataServiceImpl::QueryDataRange(
     google::protobuf::RpcController *controller, const ::EmptyMessage *request,
     ::QueryRangeResponse *response, ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   const auto &ranges = storage_->Read();
   for (const auto &r : ranges) {
     auto *d = response->add_ranges();
@@ -43,14 +51,22 @@ void DataServiceImpl::ClearData(google::protobuf::RpcController *controller,
                                 const ::EmptyMessage *request,
                                 ::EmptyMessage *response,
                                 ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   storage_->Clear();
 }
 
 void GossipServiceImpl::ManualGossip(
     google::protobuf::RpcController *controller, const ::EmptyMessage *request,
     ::EmptyMessage *response, ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   // TODO(zhangxingrui): use thread pool + async
   // manual gossip with all peers
   // GossipTask gossip_task;
@@ -64,8 +80,15 @@ void GossipServiceImpl::PushData(google::protobuf::RpcController *controller,
                                  const ::GossipData *request,
                                  ::EmptyMessage *response,
                                  ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   // TODO(zhangxingrui): async
+  // DLOG(INFO) << "push request, receive from: "
+  //            << ((brpc::Controller *)(controller))->remote_side();
+  DLOG(INFO) << "push request, receive from: " << request->addr();
   for (int i = 0; i < request->ranges_size(); ++i) {
     storage_->Write({request->ranges(i).start(), request->ranges(i).end()});
   }
@@ -75,7 +98,12 @@ void GossipServiceImpl::PullData(google::protobuf::RpcController *controller,
                                  const ::GossipData *request,
                                  ::GossipData *response,
                                  ::google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
+  DLOG(INFO) << "pull request, receive from: " << request->addr();
   // Now that we take ranges as meta and data
   // just copy request to response and return
   for (int i = 0; i < request->ranges_size(); ++i) {

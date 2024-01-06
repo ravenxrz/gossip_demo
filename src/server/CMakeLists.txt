@@ -25,5 +25,11 @@ add_library(service_obj OBJECT service.cc gossip_rpc.cc gossip_task.cc)
 target_link_libraries(service_obj gossip_proto storage_obj utils_obj)
 target_include_directories(service_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(server main.cc server.cc )
-target_link_libraries(server ${DEP_LIBS} service_obj storage_obj flags_obj)
+add_library(server-static STATIC server.cc)
+target_link_libraries(server-static ${DEP_LIBS} service_obj flags_obj storage_obj)
+
+add_library(server-shared SHARED server.cc)
+target_link_libraries(server-shared ${DEP_LIBS} service_obj flags_obj storage_obj)
+
+add_executable(server main.cc)
+target_link_libraries(server server-static)

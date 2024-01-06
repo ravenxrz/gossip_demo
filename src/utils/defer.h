@@ -18,4 +18,3 @@ public:
 
   std::function<void()> func_;
 };
-

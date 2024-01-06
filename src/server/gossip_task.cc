@@ -4,6 +4,7 @@
 #include "data.pb.h"
 #include "error.h"
 #include "gossip.pb.h"
+#include "server.h"
 
 void GossipTask::Run() {
 loop:
@@ -32,6 +33,10 @@ loop:
   default:
     break;
   }
+  if (GetTaskTSatus()) {
+    LOG(ERROR) << "gossip error with error:" << GetTaskTSatus();
+  }
+  TaskDone();
 }
 
 void GossipTask::QueryRange() {
@@ -108,11 +113,15 @@ void GossipTask::Diff() {
     need_pull_.push_back(peer_ranges_[j++]);
   }
 
-  DLOG(INFO) << "need push ranges:";
+  if (!need_push_.empty()) {
+    DLOG(INFO) << "need push ranges to:" << peer_;
+  }
   for (const auto &r : need_push_) {
     DLOG(INFO) << r.ToString();
   }
-  DLOG(INFO) << "need pull ranges:";
+  if (!need_pull_.empty()) {
+    DLOG(INFO) << "need pull ranges from:" << peer_;
+  }
   for (const auto &r : need_pull_) {
     DLOG(INFO) << r.ToString();
   }
@@ -124,6 +133,7 @@ void GossipTask::PushData() {
   }
 
   GossipData req;
+  req.set_addr(Server::GetInstance().GetAddr());
   EmptyMessage rsp;
   for (const auto &r : need_push_) {
     auto *d = req.add_ranges();
@@ -143,6 +153,7 @@ void GossipTask::PullData() {
   }
   GossipData req;
   GossipData rsp;
+  req.set_addr(Server::GetInstance().GetAddr());
   for (const auto &r : need_pull_) {
     auto *d = req.add_ranges();
     d->set_start(r.start);

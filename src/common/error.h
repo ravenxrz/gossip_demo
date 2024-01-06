@@ -10,7 +10,7 @@ enum ErrorCode : int32_t {
 
   // client
   NO_SUCH_NODE_FOUND = 1000,
-  
-  // server 
+
+  // server
   SERVICE_INIT_FAILED = 2000,
 };

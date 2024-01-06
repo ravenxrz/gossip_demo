@@ -62,8 +62,8 @@ TEST_F(GossipTest, NoNeedGossip) {
   EXPECT_CALL(rpc, PullData).Times(0);
   EXPECT_CALL(rpc, PushData).Times(0);
 
-  GossipTask task("", &storage_, &rpc);
-  task.Run();
+  GossipTask *task = new GossipTask("", &storage_, &rpc);
+  task->Run();
 
   const auto &r = storage_.Read();
   EXPECT_EQ(r.size(), 3);
@@ -89,8 +89,8 @@ TEST_F(GossipTest, OnlyPush) {
       });
   EXPECT_CALL(rpc, PullData).Times(0);
 
-  GossipTask task("", &storage_, &rpc);
-  task.Run();
+  GossipTask *task = new GossipTask("", &storage_, &rpc);
+  task->Run();
 }
 
 TEST_F(GossipTest, OnlyPull) {
@@ -121,8 +121,8 @@ TEST_F(GossipTest, OnlyPull) {
         return OK;
       });
   EXPECT_CALL(rpc, PushData).Times(0);
-  GossipTask task("", &storage_, &rpc);
-  task.Run();
+  GossipTask *task = new GossipTask("", &storage_, &rpc);
+  task->Run();
 }
 
 TEST_F(GossipTest, PushAndPull) {
@@ -166,8 +166,8 @@ TEST_F(GossipTest, PushAndPull) {
     return OK;
   };
   EXPECT_CALL(rpc, PullData).WillOnce(pull_handle);
-  GossipTask task("", &storage_, &rpc);
-  task.Run();
+  GossipTask *task = new GossipTask("", &storage_, &rpc);
+  task->Run();
 
   std::vector<::Range> expects = {{5, 20}, {30, 45}, {48, 65}, {70, 80}};
   const auto &actual = storage_.Read();

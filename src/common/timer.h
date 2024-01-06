@@ -22,9 +22,9 @@ public:
 
   bool UnRegister(timer_task_id_t id, UnRegisterCB cb);
 
+private:
   timer_task_id_t GenTaskId() { return id_gen_++; }
 
-private:
   TaskWorker *const worker_{nullptr};
   std::atomic<timer_task_id_t> id_gen_;
   std::unordered_map<timer_task_id_t, BaseTask *> tasks_;

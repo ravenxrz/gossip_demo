@@ -15,7 +15,8 @@ public:
                  ::google::protobuf::Closure *done) override;
 
   void QueryDataRange(google::protobuf::RpcController *controller,
-                      const ::EmptyMessage *request, ::QueryRangeResponse *response,
+                      const ::EmptyMessage *request,
+                      ::QueryRangeResponse *response,
                       ::google::protobuf::Closure *done) override;
 
   void ClearData(google::protobuf::RpcController *controller,

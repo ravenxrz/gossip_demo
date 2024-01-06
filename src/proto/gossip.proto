@@ -7,6 +7,7 @@ option cc_generic_services = true;
 
 message GossipData {
   repeated Data ranges = 1; 
+  optional string addr = 2; // we dont' need this, only for debug msg
 }
 
 service GossipService {

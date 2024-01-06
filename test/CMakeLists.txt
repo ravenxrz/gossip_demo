@@ -1,7 +1,6 @@
 
-enable_testing()
 file(GLOB test_files "${CMAKE_CURRENT_SOURCE_DIR}/*.cc")
-set(UT_DEP_LIBS gossip_proto protobuf brpc gflags storage_obj service_obj common_obj utils_obj)
+set(UT_DEP_LIBS server-shared)
 foreach(file ${test_files})
   get_filename_component(file_name ${file} NAME)
   if(file_name MATCHES "^test.*\\.cc$")

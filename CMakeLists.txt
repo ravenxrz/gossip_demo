@@ -51,5 +51,6 @@ endif()
 add_subdirectory(src)
 
 if(BUILD_UT)
+  enable_testing()
   add_subdirectory(test)
 endif()

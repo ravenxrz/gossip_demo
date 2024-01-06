@@ -44,8 +44,10 @@ TaskWorker::~TaskWorker() {
   // mark thread exit
   exit_.store(true, std::memory_order_relaxed);
   cv_.NotifyAll();
-  t_->join();
-  delete t_;
+  if (t_) {
+    t_->join();
+    delete t_;
+  }
 
   // delete not running task
   for (auto *task : q_) {

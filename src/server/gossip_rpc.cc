@@ -10,7 +10,11 @@
 int32_t GossipRpc::QueryDataRange(const std::string &addr, EmptyMessage *req,
                                   QueryRangeResponse *rsp,
                                   google::protobuf::Closure *done) {
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   brpc::Channel channel;
   if (auto ret = InitRpcChannel(addr, channel); ret != OK) {
     return ret;
@@ -30,7 +34,11 @@ int32_t GossipRpc::PushData(const std::string &addr, GossipData *req,
                             EmptyMessage *rsp,
                             google::protobuf::Closure *done) {
 
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   brpc::Channel channel;
   if (auto ret = InitRpcChannel(addr, channel); ret != OK) {
     return ret;
@@ -49,7 +57,11 @@ int32_t GossipRpc::PushData(const std::string &addr, GossipData *req,
 int32_t GossipRpc::PullData(const std::string &addr, GossipData *req,
                             GossipData *rsp, google::protobuf::Closure *done) {
 
-  defer d([done] { done->Run(); });
+  defer d([done] {
+    if (done != nullptr) {
+      done->Run();
+    }
+  });
   brpc::Channel channel;
   if (auto ret = InitRpcChannel(addr, channel); ret != OK) {
     return ret;

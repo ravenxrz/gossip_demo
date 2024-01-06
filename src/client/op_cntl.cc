@@ -4,7 +4,7 @@
 
 void OpCntl::Write(node_id_t node, const Range &w) {
   int ret = OK;
-  if (node == -1) {
+  if (node == node_id_t(-1)) {
     for (auto node : client_->ListAllNodes()) {
       ret = client_->Write(node, w);
       if (ret != OK) {
@@ -22,7 +22,7 @@ void OpCntl::Write(node_id_t node, const Range &w) {
 void OpCntl::Read(node_id_t node) {
   std::string read_ret;
   int ret = OK;
-  if (node == -1) {
+  if (node == node_id_t(-1)) {
     for (auto node : client_->ListAllNodes()) {
       ret = client_->Read(node, &read_ret);
       if (ret != OK) {
@@ -43,7 +43,7 @@ void OpCntl::Read(node_id_t node) {
 
 void OpCntl::Clear(node_id_t node) {
   int ret = OK;
-  if (node == -1) {
+  if (node == node_id_t(-1)) {
     for (auto node : client_->ListAllNodes()) {
       ret = client_->Clear(node);
       if (ret != OK) {

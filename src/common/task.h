@@ -21,7 +21,7 @@ public:
 
   void SetTaskStatus(uint32_t status) { task_status_ = status; }
 
-  uint32_t GetTaskTatus() const { return task_status_; }
+  uint32_t GetTaskTSatus() const { return task_status_; }
 
   void SetTaskType(uint32_t task_type) { task_type = task_type; }
 
